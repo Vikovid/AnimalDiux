@@ -1,0 +1,53 @@
+[10-Oct-2022 15:36:33 America/Mexico_City] PHP Fatal error:  Uncaught Error: Call to undefined function numTiposPagos() in /home4/glsoftst/public_html/AnimalDiux/vista/ventas/sales.php:169
+Stack trace:
+#0 {main}
+  thrown in /home4/glsoftst/public_html/AnimalDiux/vista/ventas/sales.php on line 169
+[10-Oct-2022 15:36:50 America/Mexico_City] PHP Fatal error:  Uncaught Error: Call to undefined function numTiposPagos() in /home4/glsoftst/public_html/AnimalDiux/vista/ventas/sales.php:169
+Stack trace:
+#0 {main}
+  thrown in /home4/glsoftst/public_html/AnimalDiux/vista/ventas/sales.php on line 169
+[10-Oct-2022 15:36:53 America/Mexico_City] PHP Fatal error:  Uncaught Error: Call to undefined function numTiposPagos() in /home4/glsoftst/public_html/AnimalDiux/vista/ventas/sales.php:169
+Stack trace:
+#0 {main}
+  thrown in /home4/glsoftst/public_html/AnimalDiux/vista/ventas/sales.php on line 169
+[10-Oct-2022 15:37:05 America/Mexico_City] PHP Fatal error:  Uncaught Error: Call to undefined function numTiposPagos() in /home4/glsoftst/public_html/AnimalDiux/vista/ventas/sales.php:169
+Stack trace:
+#0 {main}
+  thrown in /home4/glsoftst/public_html/AnimalDiux/vista/ventas/sales.php on line 169
+[10-Oct-2022 15:37:25 America/Mexico_City] PHP Fatal error:  Uncaught Error: Call to undefined function numTiposPagos() in /home4/glsoftst/public_html/AnimalDiux/vista/ventas/sales.php:169
+Stack trace:
+#0 {main}
+  thrown in /home4/glsoftst/public_html/AnimalDiux/vista/ventas/sales.php on line 169
+[10-Oct-2022 15:38:24 America/Mexico_City] PHP Fatal error:  Uncaught Error: Call to undefined function numTiposPagos() in /home4/glsoftst/public_html/AnimalDiux/vista/ventas/sales.php:169
+Stack trace:
+#0 {main}
+  thrown in /home4/glsoftst/public_html/AnimalDiux/vista/ventas/sales.php on line 169
+[10-Oct-2022 15:38:35 America/Mexico_City] PHP Fatal error:  Uncaught Error: Call to undefined function numTiposPagos() in /home4/glsoftst/public_html/AnimalDiux/vista/ventas/sales.php:169
+Stack trace:
+#0 {main}
+  thrown in /home4/glsoftst/public_html/AnimalDiux/vista/ventas/sales.php on line 169
+[10-Oct-2022 15:38:56 America/Mexico_City] PHP Fatal error:  Uncaught Error: Call to undefined function numTiposPagos() in /home4/glsoftst/public_html/AnimalDiux/vista/ventas/sales.php:169
+Stack trace:
+#0 {main}
+  thrown in /home4/glsoftst/public_html/AnimalDiux/vista/ventas/sales.php on line 169
+[10-Oct-2022 15:39:01 America/Mexico_City] PHP Fatal error:  Uncaught Error: Call to undefined function numTiposPagos() in /home4/glsoftst/public_html/AnimalDiux/vista/ventas/sales.php:169
+Stack trace:
+#0 {main}
+  thrown in /home4/glsoftst/public_html/AnimalDiux/vista/ventas/sales.php on line 169
+[10-Oct-2022 15:43:47 America/Mexico_City] PHP Fatal error:  Uncaught Error: Call to undefined function numTiposPagos() in /home4/glsoftst/public_html/AnimalDiux/vista/ventas/sales.php:169
+Stack trace:
+#0 {main}
+  thrown in /home4/glsoftst/public_html/AnimalDiux/vista/ventas/sales.php on line 169
+[10-Oct-2022 15:46:35 America/Mexico_City] PHP Fatal error:  Uncaught Error: Call to undefined function numTiposPagos() in /home4/glsoftst/public_html/AnimalDiux/vista/ventas/sales.php:169
+Stack trace:
+#0 {main}
+  thrown in /home4/glsoftst/public_html/AnimalDiux/vista/ventas/sales.php on line 169
+[10-Oct-2022 15:46:40 America/Mexico_City] PHP Fatal error:  Uncaught Error: Call to undefined function numTiposPagos() in /home4/glsoftst/public_html/AnimalDiux/vista/ventas/sales.php:169
+Stack trace:
+#0 {main}
+  thrown in /home4/glsoftst/public_html/AnimalDiux/vista/ventas/sales.php on line 169
+[10-Oct-2022 15:46:55 America/Mexico_City] PHP Fatal error:  Uncaught Error: Call to undefined function numTiposPagos() in /home4/glsoftst/public_html/AnimalDiux/vista/ventas/sales.php:169
+Stack trace:
+#0 {main}
+  thrown in /home4/glsoftst/public_html/AnimalDiux/vista/ventas/sales.php on line 169
+[02-Apr-2023 12:14:13 America/Mexico_City] PHP Warning:  Division by zero in /home4/glsoftst/public_html/AnimalDiux/vista/ventas/ventas.php on line 252
