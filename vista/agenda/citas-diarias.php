@@ -1,7 +1,7 @@
 <?php
    require_once('../../modelo/load.php');
    $page_title = 'Consulta de citas por día';  
-   page_require_level(1);
+   page_require_level(3);
 
    ini_set ('date.timezone', 'America/Mexico_City');
    $fecha_actual = date('Y-m-d', time());
@@ -53,8 +53,9 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Citas por día</title>
+   <title>Citas por día</title>
 </head>
+
 <body onload="foco();diasMes();">
    <form name="form1" method="post" action="citas-diarias.php">
       <div class="row col-md-12">
@@ -64,8 +65,7 @@
       <?php echo "$fechIni"; ?>
       <?php if ($vm_scu!="") { ?>
          <span>&nbsp;&nbsp;&nbsp;&nbsp;</span>
-         <span>Sucursal:</span>
-         <?php echo $nomSucursal; ?>
+         <span>Sucursal: <?php echo $nomSucursal; ?></span>
       <?php } ?>
       <div class="row col-md-12">
          <div class="panel panel-default">

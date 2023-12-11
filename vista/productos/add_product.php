@@ -2,7 +2,7 @@
    $page_title = 'Agregar producto';
    require_once('../../modelo/load.php');
 
-   page_require_level(2);
+   page_require_level(3);
    $all_categories = find_all('categories');
    $all_proveedor = find_all('proveedor');
    $all_sucursal = find_all('sucursal');

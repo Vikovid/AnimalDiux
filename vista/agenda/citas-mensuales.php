@@ -2,7 +2,7 @@
    require_once('../../modelo/load.php');
    
    $page_title = 'Citas mensuales';
-   page_require_level(1);
+   page_require_level(3);
 
    $meses = array('01'=>'Enero',
                   '02'=>'Febrero',

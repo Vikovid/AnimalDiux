@@ -3,27 +3,23 @@
 	require_once('../../libs/Classes/PHPExcel.php');
    require_once('../../modelo/load.php');
 
+   // Categorias
    $all_categorias = find_all('categories');
-   $regCat =      "";
-   $regSubCat =   "";
-   $mes =         "";
-   $anio =        "";
+ 	
+ 	// Filtros
+   $regCat = "";
+   $mes = "";
+   $anio = "";
   	
-   $subcategorias = '';
-   if(isset($_POST['categoria'])){  
-      $regCat = remove_junk($db->escape($_POST['categoria']));
-      if ($regCat != '') {
-         $subcategorias = buscaRegsPorCampo('subcategorias','idCategoria',$regCat);
-      }
-   }
-   if(isset($_POST['subcategoria']))
-      $regSubCat = remove_junk($db->escape($_POST['subcategoria']));
+  	// Esctableciendo los valores de los filtros
+   if(isset($_POST['categoria']))
+      $regCat = 	remove_junk($db->escape($_POST['categoria']));
    if(isset($_POST['mes']))
-      $mes = remove_junk($db->escape($_POST['mes']));
-   if(isset($_POST['anio']))
-      $anio = remove_junk($db->escape($_POST['anio']));
+      $mes =  		remove_junk($db->escape($_POST['mes']));
+   if(isset($_POST['anio']))  
+      $anio =  	remove_junk($db->escape($_POST['anio']));
 
-   // Configuración de fechas
+   // Establece los rangos de las fechas con base a los valores de los filtros
    if ($mes == "" && $anio == ""){                          
       $year = date('Y');
       $fechaInicial = $year."/01/01";
@@ -51,19 +47,22 @@
 	
 	// Titulo
    $titulo ='categorias';				
+	if ($regCat != '') {
+		$categorie = find_by_id('categories',$regCat);
+		$titulo = $categorie['name'];
+	}
+
    // Longitud del titulo
    $longNomCat = strlen($titulo);
    // Reduciendo la longitud del título
    if ($longNomCat >= 31)
       $titulo = substr($titulo,0,31);
 
-	if($regCat != '' && $regSubCat == ''){
-      $categorias = monthlycateg1($fechaIni, $fechaFin, $regCat);
-   }elseif($regCat != '' && $regSubCat != ''){
-      $categorias = monthlySubcateg1($fechaIni, $fechaFin, $regCat, $regSubCat);
-   }
-   else{
-      $categorias = monthlycat1($fechaIni, $fechaFin);
+   // Retorna una matriz
+   if($regCat != ""){
+     $categorias = buscaRegsPorCampo('categories','id',$regCat);
+   }else{
+     $categorias = monthlycat1($fechaIni,$fechaFin);
    }
 
 	// Creación del objeto PHPExcel
@@ -86,28 +85,50 @@
 
    // Coloca los títulos de las columnas de la tabla
    $objPHPExcel->getActiveSheet()->setCellValue('A1','CATEGORIA');
-   $objPHPExcel->getActiveSheet()->setCellValue('B1','SUBCATEGORIA');
-   $objPHPExcel->getActiveSheet()->setCellValue('C1','CANTIDAD');
-   $objPHPExcel->getActiveSheet()->setCellValue('D1','VENTA');
-   $objPHPExcel->getActiveSheet()->setCellValue('E1','GASTO');
-   $objPHPExcel->getActiveSheet()->setCellValue('F1','GANANCIA');
+   $objPHPExcel->getActiveSheet()->setCellValue('B1','CANTIDAD');
+   $objPHPExcel->getActiveSheet()->setCellValue('C1','VENTA');
+   $objPHPExcel->getActiveSheet()->setCellValue('D1','GASTO');
+   $objPHPExcel->getActiveSheet()->setCellValue('E1','GANANCIA');
 	
    // Comienza en la celda A2
    $fila=2;
 
-   foreach ($categorias as $categ){
- 		$objPHPExcel->getActiveSheet()->setCellValue('A'.$fila, utf8_encode($categ['categoria']));
-      $objPHPExcel->getActiveSheet()->setCellValue('B'.$fila, $categ['subCat']);
- 		$objPHPExcel->getActiveSheet()->setCellValue('C'.$fila, $categ['cantVentas']);
- 		$objPHPExcel->getActiveSheet()->setCellValue('D'.$fila, $categ['ventas']);
- 		$objPHPExcel->getActiveSheet()->setCellValue('E'.$fila, $categ['gasto']);
- 		$objPHPExcel->getActiveSheet()->setCellValue('F'.$fila, $categ['ganancia']);
+   foreach ($categorias as $categoria){
+		$ventaCat = ventasCatTotal($categoria['id'],$fechaIni,$fechaFin);
+                   
+      if ($ventaCat != null){
+         $totalVenta = $ventaCat['total'];
+         $cantidad = $ventaCat['cantidad'];
+      }
 
- 		$objPHPExcel->getActiveSheet()->getStyle("D".$fila)->getNumberFormat()->setFormatCode("_(\"$\"* #,##0.00_);_(\"$\"* \(#,##0.00\);_(\"$\"* \"-\"??_);_(@_)");
-      $objPHPExcel->getActiveSheet()->getStyle("E".$fila)->getNumberFormat()->setFormatCode("_(\"$\"* #,##0.00_);_(\"$\"* \(#,##0.00\);_(\"$\"* \"-\"??_);_(@_)");
-      $objPHPExcel->getActiveSheet()->getStyle("F".$fila)->getNumberFormat()->setFormatCode("_(\"$\"* #,##0.00_);_(\"$\"* \(#,##0.00\);_(\"$\"* \"-\"??_);_(@_)");
+      $gastoCat = gastosCatTotal($categoria['id'],$fechaIni,$fechaFin);
 
- 		$fila++;      
+      if ($gastoCat != null){
+      	$totalGasto = $gastoCat['total'];
+      }
+             
+      $ganancia = $totalVenta - $totalGasto;
+
+      if ($totalGasto == "")
+      	$totalGasto = 0;
+      if ($totalVenta == "")
+         $totalVenta = 0;
+      if ($cantidad == "")
+         $cantidad = "0";
+
+      if ($totalVenta != 0 || $totalGasto != 0){
+ 			$objPHPExcel->getActiveSheet()->setCellValue('A'.$fila, $categoria['name']);
+ 			$objPHPExcel->getActiveSheet()->setCellValue('B'.$fila, $cantidad);
+ 			$objPHPExcel->getActiveSheet()->setCellValue('C'.$fila, $totalVenta);
+ 			$objPHPExcel->getActiveSheet()->setCellValue('D'.$fila, $totalGasto);
+ 			$objPHPExcel->getActiveSheet()->setCellValue('E'.$fila, $ganancia);
+
+ 			$objPHPExcel->getActiveSheet()->getStyle("C".$fila)->getNumberFormat()->setFormatCode("_(\"$\"* #,##0.00_);_(\"$\"* \(#,##0.00\);_(\"$\"* \"-\"??_);_(@_)");
+         $objPHPExcel->getActiveSheet()->getStyle("D".$fila)->getNumberFormat()->setFormatCode("_(\"$\"* #,##0.00_);_(\"$\"* \(#,##0.00\);_(\"$\"* \"-\"??_);_(@_)");
+         $objPHPExcel->getActiveSheet()->getStyle("E".$fila)->getNumberFormat()->setFormatCode("_(\"$\"* #,##0.00_);_(\"$\"* \(#,##0.00\);_(\"$\"* \"-\"??_);_(@_)");
+
+ 			$fila++;
+      }
    }
 
    /*Nombre de la página*/
@@ -122,7 +143,6 @@
    $objPHPExcel->getActiveSheet()->getColumnDimension('C')->setAutoSize(true);
    $objPHPExcel->getActiveSheet()->getColumnDimension('D')->setAutoSize(true);
    $objPHPExcel->getActiveSheet()->getColumnDimension('E')->setAutoSize(true);
-   $objPHPExcel->getActiveSheet()->getColumnDimension('F')->setAutoSize(true);
    
    header('Content-Type: application/vnd.ms-excel');
    header('Content-Disposition: attachment;filename="Monthly_sales_categoria.xls"'); //nombre del documento
@@ -131,4 +151,5 @@
    $objWriter=PHPExcel_IOFactory::createWriter($objPHPExcel,'Excel5');
    $objWriter->save('php://output');
    exit;
+
 ?>

@@ -178,7 +178,7 @@ function dato(){
                         <strong>
                            <span>&nbsp;&nbsp;&nbsp;&nbsp;</span>
                            <span class="glyphicon glyphicon-th"></span>
-                           <span><?php echo $categoria ?></span>
+                           <span><?php echo remove_junk($categoria); ?></span>
                         </strong>
                      <?php } ?>   
                   </div>   

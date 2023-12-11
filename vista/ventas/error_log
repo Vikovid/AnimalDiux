@@ -51,3 +51,48 @@ Stack trace:
 #0 {main}
   thrown in /home4/glsoftst/public_html/AnimalDiux/vista/ventas/sales.php on line 169
 [02-Apr-2023 12:14:13 America/Mexico_City] PHP Warning:  Division by zero in /home4/glsoftst/public_html/AnimalDiux/vista/ventas/ventas.php on line 252
+[05-Oct-2023 18:20:20 America/Mexico_City] PHP Fatal error:  Uncaught Error: Call to a member function isAccessTokenExpired() on string in /home4/glsoftst/public_html/AnimalDiux/vista/layouts/header.php:26
+Stack trace:
+#0 /home4/glsoftst/public_html/AnimalDiux/vista/ventas/consulta_sale.php(17): include_once()
+#1 {main}
+  thrown in /home4/glsoftst/public_html/AnimalDiux/vista/layouts/header.php on line 26
+[05-Oct-2023 18:20:59 America/Mexico_City] PHP Fatal error:  Uncaught Error: Call to a member function isAccessTokenExpired() on string in /home4/glsoftst/public_html/AnimalDiux/vista/layouts/header.php:26
+Stack trace:
+#0 /home4/glsoftst/public_html/AnimalDiux/vista/ventas/consulta_sale.php(17): include_once()
+#1 {main}
+  thrown in /home4/glsoftst/public_html/AnimalDiux/vista/layouts/header.php on line 26
+[05-Oct-2023 18:21:10 America/Mexico_City] PHP Fatal error:  Uncaught Error: Call to a member function isAccessTokenExpired() on string in /home4/glsoftst/public_html/AnimalDiux/vista/layouts/header.php:26
+Stack trace:
+#0 /home4/glsoftst/public_html/AnimalDiux/vista/ventas/consulta_sale.php(17): include_once()
+#1 {main}
+  thrown in /home4/glsoftst/public_html/AnimalDiux/vista/layouts/header.php on line 26
+[05-Oct-2023 18:22:29 America/Mexico_City] PHP Fatal error:  Uncaught Error: Call to a member function isAccessTokenExpired() on string in /home4/glsoftst/public_html/AnimalDiux/vista/layouts/header.php:26
+Stack trace:
+#0 /home4/glsoftst/public_html/AnimalDiux/vista/ventas/consulta_sale.php(17): include_once()
+#1 {main}
+  thrown in /home4/glsoftst/public_html/AnimalDiux/vista/layouts/header.php on line 26
+[05-Oct-2023 18:55:50 America/Mexico_City] PHP Fatal error:  Uncaught Error: Call to a member function isAccessTokenExpired() on string in /home4/glsoftst/public_html/AnimalDiux/vista/layouts/header.php:26
+Stack trace:
+#0 /home4/glsoftst/public_html/AnimalDiux/vista/ventas/consulta_sale.php(17): include_once()
+#1 {main}
+  thrown in /home4/glsoftst/public_html/AnimalDiux/vista/layouts/header.php on line 26
+[30-Oct-2023 15:10:26 America/Mexico_City] PHP Fatal error:  Uncaught Error: Call to a member function isAccessTokenExpired() on string in /home4/glsoftst/public_html/AnimalDiux/vista/layouts/header.php:26
+Stack trace:
+#0 /home4/glsoftst/public_html/AnimalDiux/vista/ventas/consulta_sale.php(17): include_once()
+#1 {main}
+  thrown in /home4/glsoftst/public_html/AnimalDiux/vista/layouts/header.php on line 26
+[30-Oct-2023 15:11:13 America/Mexico_City] PHP Fatal error:  Uncaught Error: Call to a member function isAccessTokenExpired() on string in /home4/glsoftst/public_html/AnimalDiux/vista/layouts/header.php:26
+Stack trace:
+#0 /home4/glsoftst/public_html/AnimalDiux/vista/ventas/consulta_sale.php(17): include_once()
+#1 {main}
+  thrown in /home4/glsoftst/public_html/AnimalDiux/vista/layouts/header.php on line 26
+[30-Oct-2023 15:25:48 America/Mexico_City] PHP Fatal error:  Uncaught Error: Call to a member function isAccessTokenExpired() on string in /home4/glsoftst/public_html/AnimalDiux/vista/layouts/header.php:26
+Stack trace:
+#0 /home4/glsoftst/public_html/AnimalDiux/vista/ventas/consulta_sale.php(17): include_once()
+#1 {main}
+  thrown in /home4/glsoftst/public_html/AnimalDiux/vista/layouts/header.php on line 26
+[30-Oct-2023 15:26:45 America/Mexico_City] PHP Fatal error:  Uncaught Error: Call to a member function isAccessTokenExpired() on string in /home4/glsoftst/public_html/AnimalDiux/vista/layouts/header.php:26
+Stack trace:
+#0 /home4/glsoftst/public_html/AnimalDiux/vista/ventas/consulta_sale.php(17): include_once()
+#1 {main}
+  thrown in /home4/glsoftst/public_html/AnimalDiux/vista/layouts/header.php on line 26

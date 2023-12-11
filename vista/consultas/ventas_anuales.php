@@ -84,7 +84,7 @@
      <?php if($vm_scu!=""){ ?>
           <span>&nbsp;&nbsp;&nbsp;&nbsp;</span>
           <span>Sucursal:</span>
-          <?php echo $nomSucursal; ?>
+          <?php echo remove_junk($nomSucursal); ?>
      <?php } ?>
 <?php
 

@@ -2,7 +2,7 @@
    require_once('../../modelo/load.php');
    $page_title = 'Lista de productos';
    // Checkin What level user has permission to view this page
-   page_require_level(2);
+   page_require_level(3);
 
    $products = join_product_table();
    $all_categorias = find_all('categories');
@@ -18,9 +18,9 @@
    if ($p_scu!=""){
       if ($codigo!="") {
          if (is_numeric($codigo)){
-            $products = join_product_table1($codigo,$p_scu);
+            $products = join_product_table1($codigo,$p_scu,'');
          }else{
-            $products = join_product_table2($codigo,$p_scu);
+            $products = join_product_table2($codigo,$p_scu,'');
          }
       }else{
          $products = join_select_categories($p_scu);
@@ -69,7 +69,7 @@
                           <option value="">Selecciona una categoria</option>
                           <?php  foreach ($all_categorias as $id): ?>
                           <option value="<?php echo (int)$id['id'] ?>">
-                          <?php echo $id['name'] ?></option>
+                          <?php echo remove_junk($id['name']); ?></option>
                           <?php endforeach; ?>
                        </select>
                     </div>  

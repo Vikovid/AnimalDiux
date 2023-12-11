@@ -2,7 +2,7 @@
   $page_title = 'Lista de ventas';
   require_once('../../modelo/load.php');
   // Checkin What level user has permission to view this page
-  page_require_level(1);
+  page_require_level(2);
 
   $formaPago = "";
   $mes = "";
@@ -211,7 +211,7 @@ function excel(){
                   <?php if($sale['tipo_pago'] == "0"){ ?>             
                   <tr>
                      <td><?php echo remove_junk($vendedor); ?></td>
-                     <td><?php echo utf8_decode(remove_junk($producto)); ?></td>
+                     <td><?php echo remove_junk($producto); ?></td>
                      <td class="text-center"><?php echo $cantidad; ?></td>
                      <td class="text-right"><?php echo remove_junk($precio); ?></td>
                      <td class="text-center"><?php echo $tipoPago; ?></td>
@@ -256,7 +256,7 @@ function excel(){
                <?php if($sale['tipo_pago'] == "0" && $formaPago == $idTipoPago){ ?>             
                         <tr>
                            <td><?php echo remove_junk($vendedor); ?></td>
-                           <td><?php echo utf8_decode(remove_junk($producto)); ?></td>
+                           <td><?php echo remove_junk($producto); ?></td>
                            <td class="text-center"><?php echo $cantidad; ?></td>
                            <td class="text-right"><?php echo remove_junk($precio); ?></td>
                            <td class="text-center"><?php echo $tipoPago; ?></td>

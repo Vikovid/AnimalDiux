@@ -37,10 +37,8 @@
    }
 
    if ($mes == "" && $anio != ""){
-      $mes = date('m');
-      $fechaInicial = $anio."/".$mes."/01";
-      $numDias = date('t', strtotime($fechaInicial));
-      $fechaFinal = $anio."/".$mes."/".$numDias;
+      $fechaInicial = $anio."/01/01";
+      $fechaFinal = $anio."/12/31";
    }
 
    if ($mes != "" && $anio != ""){

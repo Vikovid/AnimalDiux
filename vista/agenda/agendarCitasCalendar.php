@@ -1,6 +1,6 @@
 <?php 
 	require_once('../../modelo/load.php');
-
+	page_require_level(3);
 	$meses = array('01'=>'Enero',
                   '02'=>'Febrero',
                   '03'=>'Marzo',

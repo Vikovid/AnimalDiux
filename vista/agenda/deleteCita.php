@@ -1,8 +1,9 @@
 <?php
    require_once('../../modelo/load.php');
-   page_require_level(1);
+   page_require_level(3);
 
    if(isset($_GET['id'])) {      
+
       $id =        $_GET['id'];
       $cita =      find_by_id('cita',(int)$_GET['id']);
       $idEvent =   $cita['idEvent'];

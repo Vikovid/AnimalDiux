@@ -1,0 +1,21 @@
+[05-May-2023 16:03:33 America/Mexico_City] PHP Warning:  Invalid argument supplied for foreach() in /home4/glsoftst/public_html/AnimalDiux/vista/productos/add_product.php on line 141
+[08-May-2023 14:01:32 America/Mexico_City] PHP Warning:  Invalid argument supplied for foreach() in /home4/glsoftst/public_html/AnimalDiux/vista/productos/add_product.php on line 141
+[09-May-2023 14:29:13 America/Mexico_City] PHP Warning:  Invalid argument supplied for foreach() in /home4/glsoftst/public_html/AnimalDiux/vista/productos/add_product.php on line 141
+[09-May-2023 14:29:13 America/Mexico_City] PHP Warning:  Invalid argument supplied for foreach() in /home4/glsoftst/public_html/AnimalDiux/vista/productos/add_product.php on line 141
+[09-May-2023 16:12:38 America/Mexico_City] PHP Warning:  Invalid argument supplied for foreach() in /home4/glsoftst/public_html/AnimalDiux/vista/productos/add_product.php on line 141
+[09-May-2023 16:16:55 America/Mexico_City] PHP Warning:  Invalid argument supplied for foreach() in /home4/glsoftst/public_html/AnimalDiux/vista/productos/add_product.php on line 141
+[10-May-2023 10:08:08 America/Mexico_City] PHP Warning:  Invalid argument supplied for foreach() in /home4/glsoftst/public_html/AnimalDiux/vista/productos/add_product.php on line 141
+[10-May-2023 13:36:11 America/Mexico_City] PHP Warning:  Invalid argument supplied for foreach() in /home4/glsoftst/public_html/AnimalDiux/vista/productos/add_product.php on line 141
+[13-May-2023 13:29:52 America/Mexico_City] PHP Warning:  Invalid argument supplied for foreach() in /home4/glsoftst/public_html/AnimalDiux/vista/productos/add_product.php on line 141
+[14-May-2023 10:40:58 America/Mexico_City] PHP Warning:  Invalid argument supplied for foreach() in /home4/glsoftst/public_html/AnimalDiux/vista/productos/add_product.php on line 141
+[15-May-2023 13:03:30 America/Mexico_City] PHP Warning:  Invalid argument supplied for foreach() in /home4/glsoftst/public_html/AnimalDiux/vista/productos/add_product.php on line 141
+[19-Aug-2023 18:10:56 America/Mexico_City] PHP Fatal error:  Uncaught ArgumentCountError: Too few arguments to function join_product_table2(), 2 passed in /home4/glsoftst/public_html/AnimalDiux/vista/productos/simple_product.php on line 23 and exactly 3 expected in /home4/glsoftst/public_html/AnimalDiux/modelo/sql.php:647
+Stack trace:
+#0 /home4/glsoftst/public_html/AnimalDiux/vista/productos/simple_product.php(23): join_product_table2('GASTR', '29')
+#1 {main}
+  thrown in /home4/glsoftst/public_html/AnimalDiux/modelo/sql.php on line 647
+[21-Aug-2023 14:26:33 America/Mexico_City] PHP Fatal error:  Uncaught ArgumentCountError: Too few arguments to function join_product_table2(), 2 passed in /home4/glsoftst/public_html/AnimalDiux/vista/productos/simple_product.php on line 23 and exactly 3 expected in /home4/glsoftst/public_html/AnimalDiux/modelo/sql.php:647
+Stack trace:
+#0 /home4/glsoftst/public_html/AnimalDiux/vista/productos/simple_product.php(23): join_product_table2('ADAPTIL SPRAY', '27')
+#1 {main}
+  thrown in /home4/glsoftst/public_html/AnimalDiux/modelo/sql.php on line 647

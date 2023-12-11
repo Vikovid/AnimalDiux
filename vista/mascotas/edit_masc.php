@@ -2,7 +2,7 @@
   $page_title = 'Editar mascota';
   require_once('../../modelo/load.php');
   // Checkin What level user has permission to view this page
-  page_require_level(2);
+  page_require_level(3);
 
   $idmasc = buscaRegistroPorCampo('Mascotas','idMascotas',(int)$_GET['id']);
   $sexoAux = $idmasc['sexo'];

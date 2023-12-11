@@ -2,7 +2,7 @@
 $page_title = 'cancelacion';
   require_once('../../modelo/load.php');
   // Checkin What level user has permission to view this page
-  page_require_level(2);
+  page_require_level(3);
   $idSucursal= isset($_POST['idSuc']) ? $_POST['idSuc']:'';
   $usuario= isset($_POST['user']) ? $_POST['user']:'';
   $auxTemp= isset($_POST['cveTemp']) ? $_POST['cveTemp']:'';

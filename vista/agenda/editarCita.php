@@ -1,7 +1,7 @@
 <?php
    require_once('../../modelo/load.php');
    $page_title = 'Editar cita';
-   page_require_level(2);
+   page_require_level(3);
    ini_set ('date.timezone','America/Mexico_City');
    
    $fecha_actual = date('Y-m-d',time());
@@ -57,14 +57,15 @@
             $resultado = actCita($responsable, $fecha, $nota, $horaCita, $fecha_actual, $idCitaOrig, $idEvent);
 
             $session->msg("i","La cita se agregó correctamente a su cuenta de Google Calendar \"".$_SESSION['mailUsuario']."\".");
-            redirect("citas-mensuales.php",false);
+            echo '<script> window.location="citas-mensuales.php";</script>';
          }else {
             $session->msg("i","¡ERROR! No se pudo agendar esta cita en Google Calendar");
-            redirect("citas-mensuales.php",false);
+            echo '<script> window.location="citas-mensuales.php";</script>';
          }
       } elseif (!empty($errors)) {
          $session->msg("d",$errors);
-         redirect("editarCita?id=".$cita['id'],false);
+         //redirect("editarCita?id=".$cita['id'],false);
+         echo "<script> window.location='editarCita?id=".$cita['id']."';</script>";
       }
    }
 ?>
@@ -81,11 +82,11 @@
             $servicioCalendario->events->delete('primary',$idEvent);
          } catch (Google_Service_Exception $e) {
             $session->msg("i","¡ERROR! al eliminar el evento de Google Calendar: ".$e->getMessage());
-            redirect('citas-mensuales.php');
+            echo '<script> window.location="citas-mensuales.php";</script>';
          }
       }
       $session->msg("i","Cita eliminada correctamente de su cuenta de Google Calendar \"".$_SESSION['mailUsuario']."\"");
-      redirect('citas-mensuales.php');
+      echo '<script> window.location="citas-mensuales.php";</script>';
    }
 ?>
 <!-- Actualiza la cita en sistema y la agenda en Google Calendar -->
@@ -127,10 +128,11 @@
 
             if($resultado && $idEvent){
                $session->msg('i',"¡EXITO!, La cita fue actualizada en sistema y agendada en Google Calendar. \"".$_SESSION['mailUsuario']."\"");
-               redirect('citas-mensuales.php', false);
+               echo '<script> window.location="citas-mensuales.php";</script>';
             } else {
                $session->msg('i','Lo siento. Algo salió mal.');
-               redirect('editarCita.php?id='.$idCitaOrig, false);
+               //redirect('editarCita.php?id='.$idCitaOrig, false);
+               echo "<script> window.location='editarCita?id='.$idCitaOrig';</script>";
             }
          } else {
             if ($notaOrig != $nota) {
@@ -155,19 +157,22 @@
                   actRegistroPorCampo('cita','idEvent',$idEvent,'id',$idCitaOrig);
 
                   $session->msg('i',"¡EXITO!, La cita fue actualizada en sistema y agendada en Google Calendar. \"".$_SESSION['mailUsuario']."\"");
-                  redirect('citas-mensuales.php', false);
+                  echo '<script> window.location="citas-mensuales.php";</script>';
                } else {
                   $session->msg('i','Lo siento. Algo salió mal.');
-                  redirect('editarCita.php?id='.$idCitaOrig, false);
+                  //redirect('editarCita.php?id='.$idCitaOrig, false);
+                  echo "<script> window.location='editarCita?id='.$idCitaOrig';</script>";
                }
             } else {
                $session->msg('d','Lo siento, día y Hora ya agendada.');
-               redirect('editarCita.php?id='.$idCitaOrig, false);
+               //redirect('editarCita.php?id='.$idCitaOrig, false);
+               echo "<script> window.location='editarCita?id='.$idCitaOrig';</script>";
             }
          }
       } else {
          $session->msg("d", $errors);
-         redirect('editarCita.php?id='.$idCitaOrig,false);
+         //redirect('editarCita.php?id='.$idCitaOrig,false);
+         echo "<script> window.location='editarCita?id='.$idCitaOrig';</script>";
       }
    }
 ?>
@@ -203,11 +208,12 @@
                   if ($eventoActualizado) {
                      actCita($responsable, $fecha, $nota, $horaCita, $fecha_actual, $idCitaOrig,'');
                      $session->msg('i', "Registro Exitoso Las citas se actualizaron en el sistema y en su cuenta de Google Calendar \"".$_SESSION['mailUsuario']."\".");
-                     redirect ('citas-mensuales.php', false);  
+                     echo '<script> window.location="citas-mensuales.php";</script>';  
                   }
                } catch (Google_Service_Exception $e) {
                   $session->msg("i","Error al actualizar el evento en Google Calendar: ".$e->getMessage());
-                  redirect ('editarCita.php?id='.$idCitaOrig, false);  
+                  //redirect ('editarCita.php?id='.$idCitaOrig, false);  
+                  echo "<script> window.location='editarCita?id='.$idCitaOrig';</script>";
                }
             }
          } else {
@@ -226,19 +232,22 @@
                      }
                   }
                   $session->msg('i', "Se actualizó la nota de la cita en sistema y en Google Calendar. \"".$_SESSION['mailUsuario']."\".");
-                  redirect ('citas-mensuales.php', false);
+                  echo '<script> window.location="citas-mensuales.php";</script>';
                } else {
                   $session->msg('d', 'Lo siento, falló el registro.');
-                  redirect ('editarCita.php?id=' . $idCitaOrig, false);
+                  //redirect ('editarCita.php?id=' . $idCitaOrig, false);
+                  echo "<script> window.location='editarCita?id='.$idCitaOrig';</script>";
                }
             } else {
                $session->msg('d', 'Lo siento, día y Hora ya agendada.');
-               redirect('editarCita.php?id=' . $idCitaOrig, false);
+               //redirect('editarCita.php?id=' . $idCitaOrig, false);
+               echo "<script> window.location='editarCita?id='.$idCitaOrig';</script>";
             }
          }
       } else {
          $session->msg("d", $errors);
-         redirect('editarCita.php?id=' . $idCitaOrig, false);
+         //redirect('editarCita.php?id=' . $idCitaOrig, false);
+         echo "<script> window.location='editarCita?id='.$idCitaOrig';</script>";
       }
    }
 ?>
@@ -259,10 +268,11 @@
 
             if($resultado){
                $session->msg('s',"La cita se cambió en el sistema con éxito.");
-               redirect('citas-mensuales.php', false);
+               echo '<script> window.location="citas-mensuales.php";</script>';
             } else {
                $session->msg('d','Lo siento, falló el registro.');
-               redirect('editarCita.php?id='.$idCitaOrig, false);
+               //redirect('editarCita.php?id='.$idCitaOrig, false);
+               echo "<script> window.location='editarCita?id='.$idCitaOrig';</script>";
             }
          } else {
             if ($notaOrig != $nota) {
@@ -270,19 +280,22 @@
 
                if ($actCita) {
                   $session->msg('s',"La cita se cambió en el sistema con éxito.");
-                  redirect('citas-mensuales.php', false);
+                  echo '<script> window.location="citas-mensuales.php";</script>';
                } else {
                   $session->msg('d','Lo siento, falló el registro.');
-                  redirect('editarCita.php?id='.$idCitaOrig, false);
+                  //redirect('editarCita.php?id='.$idCitaOrig, false);
+                  echo "<script> window.location='editarCita?id='.$idCitaOrig';</script>";
                }
             } else {
                $session->msg('d','Lo siento, día y Hora ya agendada.');
-               redirect('editarCita.php?id='.$idCitaOrig, false);
+               //redirect('editarCita.php?id='.$idCitaOrig, false);
+               echo "<script> window.location='editarCita?id='.$idCitaOrig';</script>";
             }
          }
       } else {
          $session->msg("d", $errors);
-         redirect('editarCita.php?id='.$idCitaOrig,false);
+         //redirect('editarCita.php?id='.$idCitaOrig,false);
+         echo "<script> window.location='editarCita?id='.$idCitaOrig';</script>";
       }
    }
 ?>

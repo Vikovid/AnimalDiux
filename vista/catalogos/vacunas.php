@@ -53,29 +53,26 @@
 
 <body onload="foco();">
    <form name="form1" method="post" action="vacunas.php">
-      <br>
-      <div class="row">
-         <div class="col-md-9">
-            <?php echo display_msg($msg); ?>
-         </div>
-         <div class="col-md-9">
-            <div class="panel panel-default">
-               <div class="panel-heading clearfix">
-                  <div class="pull-right">
-                     <div class="form-group">
-                        <div class="col-md-6">
-                           <div class="input-group">
-                              <span class="input-group-addon">
-                                 <i class="glyphicon glyphicon-barcode"></i>
-                              </span>
-                              <input type="text" class="form-control" name="vacuna" long="50" placeholder="Vacuna">
-                           </div>
-                        </div>  
-                        <a href="#" onclick="vacunas();" class="btn btn-primary">Buscar</a> 
-                        <button type="submit" name="agregar" class="btn btn-primary">Agregar vacuna</button>
-                     </div>   
+      <div class="row col-md-9">
+         <?php echo display_msg($msg); ?>
+      </div>
+      <div class="row col-md-9">
+         <div class="panel panel-default">
+            <div class="panel-heading clearfix">
+               <div class="pull-right">
+                  <div class="form-group">
+                     <div class="col-md-6">
+                        <div class="input-group">
+                           <span class="input-group-addon">
+                              <i class="glyphicon glyphicon-barcode"></i>
+                           </span>
+                           <input type="text" class="form-control" name="vacuna" long="50" placeholder="Vacuna">
+                        </div>
+                     </div>  
+                     <a href="#" onclick="vacunas();" class="btn btn-primary">Buscar</a> 
+                     <button type="submit" name="agregar" class="btn btn-primary">Agregar vacuna</button>
                   </div>   
-               </div>
+               </div>   
             </div>
             <div class="panel-body">
                <table class="table table-bordered">
@@ -90,7 +87,7 @@
                      <?php foreach ($vacunas as $vacunas):?>
                      <tr>
                         <td class="text-center"><?php echo count_id();?></td>
-                        <td> <?php echo utf8_decode($vacunas['nombre']); ?></td>
+                        <td> <?php echo remove_junk($vacunas['nombre']); ?></td>
                         <td class="text-center">
                            <div class="btn-group">
                               <a href="edit_vacunas.php?id=<?php echo (int)$vacunas['id'];?>" class="btn btn-info btn-xs"  title="Editar" data-toggle="tooltip">

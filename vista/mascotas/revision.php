@@ -2,71 +2,110 @@
    $page_title = 'Revisión';
    require_once('../../modelo/load.php');
    include ('../../libs/fpdf/pdf.php');
+
    // Checkin What level user has permission to view this page
-   page_require_level(2);
-   $user = current_user(); 
-   $usuario = $user['name'];
-   $idUsuario = $user['id'];
+   page_require_level(3);
+
+   $user =       current_user(); 
+   $usuario =    $user['name'];
+   $idUsuario =  $user['id'];
    $idSucursal = $user['idSucursal'];
 
+   $dias =   0;
+   $anios =  0;
+   $meses =  0;
    $idMasc = "";
 
    ini_set('date.timezone','America/Mexico_City');
-   $fecha_actual=date('Y-m-d',time());
-   $hora_actual=date('H:i:s',time());
+   $hora_actual =  date('H:i:s',time());
+   $fecha_actual = date('Y-m-d',time());
 
-   $idmas= isset($_GET['idMas']) ? $_GET['idMas']:'';
+   $idmas = isset($_GET['idMas']) ? $_GET['idMas']:'';
+
+   $consultaExistente = buscaValorMaximo('consulta','idconsulta','idMascota',$idmas)['valorMax'];
+   $bandera = 0;
   
-   if(isset($_POST['revision'])){
-      $idMasc  = remove_junk($db->escape($_POST['idMascotas']));
+   if (isset($_POST['revision'])) {
+      $idMasc  =    remove_junk($db->escape($_POST['idMascotas']));
       $req_fields = array('receta','problema','diagnostico');
       validate_fields($req_fields);
-      if(empty($errors)){
-         $receta  = remove_junk($db->escape($_POST['receta']));
-         $problema  = remove_junk($db->escape($_POST['problema']));
-         $temp  = remove_junk($db->escape($_POST['temp']));
-         $peso  = remove_junk($db->escape($_POST['peso']));
-         $idmas2  = remove_junk($db->escape($_POST['idMascotas']));
-         $diagnostico  = remove_junk($db->escape($_POST['diagnostico']));
-         $Nota  = remove_junk($db->escape($_POST['Nota']));
 
-         $resultado = altaConsulta($receta,$diagnostico,$problema,$peso,$temp,$idmas2,$fecha_actual,'0',$usuario,$Nota);
+      if (empty($errors)) {
+         $temp =        remove_junk($db->escape($_POST['temp']));
+         $peso =        remove_junk($db->escape($_POST['peso']));
+         $Nota =        remove_junk($db->escape($_POST['Nota']));
+         $receta =      remove_junk($db->escape($_POST['receta']));
+         $idmas2 =      remove_junk($db->escape($_POST['idMascotas']));
+         $problema =    remove_junk($db->escape($_POST['problema']));
+         $diagnostico = remove_junk($db->escape($_POST['diagnostico']));
 
-         if($resultado){
-            $session->msg('s',"Registro Exitoso. ");
+         if (!empty($consultaExistente)) {
+               $consulta =   buscaRegistroPorCampo('consulta','idconsulta',$consultaExistente);
+               $hora_cons =  strtotime($consulta['hora']);
+               $fecha_cons = strtotime($consulta['fecha']);
+               $hora_cons =  date('H:i:s',$hora_cons);
+               $fecha_cons = date('Y-m-d',$fecha_cons);
+
+               $hora_piv = strtotime('-2 hour',strtotime($hora_actual));
+               $hora_piv = date('H:i:s',$hora_piv);
+            
+            if (($fecha_cons == $fecha_actual) && ($hora_cons >= $hora_piv)){ //está dentro del rago de las 2 hrs
+               $resultado = actConsulta($receta,$problema,$temp,$peso,$diagnostico,$Nota,$fecha_actual,$hora_actual,$consultaExistente);
+
+            } else {//está fuera del rago de las 2 hrs
+               $resultado = altaConsulta($receta,$diagnostico,$problema,$peso,$temp,$idmas2,$fecha_actual,'0',$usuario,$Nota,$hora_actual);
+               $bandera = 1;
+            }
+
+         } else{
+            $resultado = altaConsulta( $receta, $diagnostico, $problema, $peso, $temp, $idmas2, $fecha_actual,'0', $usuario,$Nota,$hora_actual);
+            $bandera = 1;
+         }
+
+         if ($resultado) {
+            $session->msg('s',"Registro exitoso.");
+
          
             $consMascota = buscaRegistroPorCampo('Mascotas','idMascotas',$idMasc);
 
-            $nombre=$consMascota['nombre'];
-            $especie=$consMascota['especie'];
-            $raza=$consMascota['raza'];
-            $Color=$consMascota['Color'];
-            $alimento=$consMascota['alimento'];
-            $sexo=$consMascota['sexo'];
-            $estado=$consMascota['estado'];
-            $edad=$consMascota['fecha_nacimiento'];
+            $raza =     $consMascota['raza'];
+            $sexo =     $consMascota['sexo'];
+            $edad =     $consMascota['fecha_nacimiento'];
+            $Color =    $consMascota['Color'];
+            $estado =   $consMascota['estado'];
+            $nombre =   $consMascota['nombre'];
+            $especie =  $consMascota['especie'];
+            $alimento = $consMascota['alimento'];
 
             $consCliente = buscaClienteMascota($idMasc);
 
-            $nom_cliente=$consCliente['nom_cliente'];
-            $idcredencial=$consCliente['idcredencial'];
+            $nom_cliente =  $consCliente['nom_cliente'];
+            $idcredencial = $consCliente['idcredencial'];
 
-            altaHistConsulta($idUsuario,$idcredencial,$idMasc,$idSucursal,"Revision",$fecha_actual,$hora_actual);
+            if ($bandera === 0) {
+               $idHistConsulta = buscaValorMaximo('histconsulta','idHistConsulta','idMascota',$idmas)['valorMax'];
 
+               if (!empty($idHistConsulta))
+                  actRegistroPorCampo('histconsulta','hora',$hora_actual,'idHistConsulta',$idHistConsulta);
+
+            } else {
+               altaHistConsulta($idUsuario,$idcredencial,$idMasc,$idSucursal,"Revision",$fecha_actual,$hora_actual);
+            }
+
+            $Tratamiento =     "TRATAMIENTO:";
+            $Diagnostico =     "Diagnóstico: ";
             $Recomendaciones = "RECOMENDACIONES:";
-            $Tratamiento = "TRATAMIENTO:";
-            $Diagnostico = "Diagnóstico: ";
 
-            $fecha=date('d-m-Y',time());
+            $fecha = date('d-m-Y',time());
 
             if ($edad != '0000-00-00'){
                $fecha_nacimiento = new DateTime($edad);
-               $hoy = new DateTime();
-               $edadMas = $hoy->diff($fecha_nacimiento);
+               $hoy =              new DateTime();
+               $edadMas =          $hoy->diff($fecha_nacimiento);
 
                $anios = $edadMas->y;
                $meses = $edadMas->m;
-               $dias = $edadMas->d;
+               $dias =  $edadMas->d;
             }
 
             $pdf = new PDF();
@@ -288,92 +327,75 @@
    }
 
    $consMascota = buscaClienteMascota($idmas);
-
-   $nomMascota = $consMascota['nombre'];
+   $nomMascota =  $consMascota['nombre'];
 ?>
 <?php include_once('../layouts/header.php'); ?>
 <script type="text/javascript" src="../../libs/js/general.js"></script>
 
 <body>
-<div class="row">
-  <div class="col-md-12">
-    <?php echo display_msg($msg); ?>
-  </div>
-</div>
-<div class="row">
-   <div class="col-md-9">
+   <div class="row col-md-9">
+      <?php echo display_msg($msg); ?>
+   </div>
+   <div class="row col-md-9">
       <div class="panel panel-default">
          <div class="panel-heading">
             <strong>
                <span class="glyphicon glyphicon-th"></span>
-               <span>Consulta de:</span>
-               <span><?php echo $nomMascota ?></span>
+               <span>Consulta de: <?php echo remove_junk($nomMascota); ?></span>
             </strong>
          </div>
          <div class="panel-body">
-            <div class="col-md-12">
-            <form name="form1" method="post" action="revision.php" class="clearfix">
-               <div class="col-md-4">
-                  <div class="input-group">
-                     <span class="input-group-addon">
-                       <i class="glyphicon glyphicon-scale"></i>
-                     </span>
-                     <input type="number" step="0.01" class="form-control" name="peso" placeholder="Peso">Kg
+            <form name="form1" method="post" action="revision.php?idMas=<?php echo $idmas?>" class="clearfix">
+               <div class="form-group row">   
+                  <div class="col-md-6">
+                     <div class="input-group">
+                        <span class="input-group-addon">
+                          <i class="glyphicon glyphicon-scale"></i>
+                        </span>
+                        <input type="number" step="0.01" class="form-control" name="peso" placeholder="Peso">Kg.
+                     </div>
+                  </div>
+                  <div class="col-md-6">
+                     <div class="input-group">
+                        <span class="input-group-addon">
+                           <i class="glyphicon glyphicon-info-sign"></i>
+                        </span>
+                        <input type="number" step="0.01" class="form-control" name="temp" placeholder="Temperatura">°C
+                     </div>
                   </div>
                </div>
-               <div class="col-md-4">
-                  <div class="input-group">
-                     <span class="input-group-addon">
-                        <i class="glyphicon glyphicon-info-sign"></i>
-                     </span>
-                     <input type="number" step="0.01" class="form-control" name="temp" placeholder="Temperatura">C
-                  </div>
+               <div class="form-group input-group">
+                  <span class="input-group-addon">
+                     <i class="glyphicon glyphicon-th-large"></i>
+                  </span>
+                  <textarea name="problema" class="form-control" placeholder="Historial clínico" maxlength="4000" rows="10" style="resize: none"></textarea>
                </div>
-               <br>
-               <br>
-               <br>
-               <div class="form-group">
-                  <div class="input-group">
-                     <span class="input-group-addon">
-                        <i class="glyphicon glyphicon-th-large"></i>
-                     </span>
-                     <p><textarea name="problema" class="form-control" placeholder="Historial clínico" maxlength="4000" rows="10" style="resize: none"></textarea></p>
-                  </div>
+               <div class="form-group input-group">
+                  <span class="input-group-addon">
+                     <i class="glyphicon glyphicon-th-large"></i>
+                  </span>
+                  <textarea name="diagnostico" class="form-control" placeholder="Diagnóstico (2 Renglones)" maxlength="150" rows="2" style="resize: none"></textarea>
                </div>
-               <div class="form-group">
-                  <div class="input-group">
-                     <span class="input-group-addon">
-                        <i class="glyphicon glyphicon-th-large"></i>
-                     </span>
-                     <p><textarea name="diagnostico" class="form-control" placeholder="Diagnóstico (2 Renglones)" maxlength="150" rows="2" style="resize: none"></textarea></p>
-                  </div>
+               <div class="form-group input-group">
+                  <span class="input-group-addon">
+                     <i class="glyphicon glyphicon-th-large"></i>
+                  </span>
+                  <textarea name="receta" class="form-control" placeholder="Receta (12 Renglones)" maxlength="1204" rows="12" style="resize: none"></textarea>
                </div>
-               <div class="form-group">
-                  <div class="input-group">
-                     <span class="input-group-addon">
-                        <i class="glyphicon glyphicon-th-large"></i>
-                     </span>
-                     <p><textarea name="receta" class="form-control" placeholder="Receta (12 Renglones)" maxlength="1204" rows="12" style="resize: none"></textarea></p>
-                  </div>
+               <div class="form-group input-group">
+                  <span class="input-group-addon">
+                     <i class="glyphicon glyphicon-th-large"></i>
+                  </span>
+                  <textarea name="Nota" class="form-control" placeholder="Recomendaciones (10 Renglones)" maxlength="1204" rows="10" style="resize: none" oninput="mayusculas(event)"></textarea>
                </div>
-               <div class="form-group">
-                  <div class="input-group">
-                     <span class="input-group-addon">
-                        <i class="glyphicon glyphicon-th-large"></i>
-                     </span>
-                     <p><textarea name="Nota" class="form-control" placeholder="Recomendaciones (10 Renglones)" maxlength="1204" rows="10" style="resize: none" oninput="mayusculas(event)"></textarea></p>
-                  </div>
-               </div>
-               <input type="hidden" value="<?php echo $idmas ?>" name="idMascotas">
                <div class="form-group" align="center">
+                  <input type="hidden" value="<?php echo $idmas ?>" name="idMascotas">
                   <input type="button" name="button" onclick="regresaHistory();" class="btn btn-primary" value="Regresar">
                   <button type="submit" name="revision" class="btn btn-danger">Imprimir y Guardar</button>
                </div>
             </form>
-            </div>
          </div>
       </div>
    </div>
-</div>
 </body>
 <?php include_once('../layouts/footer.php'); ?>

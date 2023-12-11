@@ -26,10 +26,6 @@
       }
 
       public function logout(){
-         // unset($_SESSION['user_id']);
-         // unset($_SESSION['GoogleLoginToken']);
-         // unset($_SESSION['mailUsuario']);
-
          session_destroy();
       }
 
@@ -39,6 +35,7 @@
                $type = str_replace( array('d', 'i', 'w','s'), array('danger', 'info', 'warning','success'), $type );
             $_SESSION['msg'][$type] = $msg;
          } else
+
          return $this->msg;
       }
 
@@ -51,6 +48,7 @@
          }
       }
    }
+
    $session = new Session();
    $msg =     $session->msg();
 ?>

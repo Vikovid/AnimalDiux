@@ -15,7 +15,6 @@
 
       if (empty($errors)) {
          $v_nombre  = remove_junk($db->escape($_POST['nombre']));
-
          $resultado = actRegistroPorCampo('vacunas', 'nombre', $v_nombre, 'id', $vacuna['id']);
 
          if ($resultado) {
@@ -32,16 +31,16 @@
    }
 ?>
 <?php include_once('../layouts/header.php'); ?>
-<div class="row">
-   <div class="col-md-12">
-      <?php echo display_msg($msg); ?>
-   </div>
+
+
+<div class="row col-md-9">
+   <?php echo display_msg($msg); ?>
 </div>
-<div class="row">
+<div class="row col-md-9">
    <div class="panel panel-default">
       <div class="panel-heading">
          <strong>
-            <span class="glyphicon glyphicon-th"></span>
+            <span class="glyphicon glyphicon-edit"></span>
             <span>Editar vacuna</span>
          </strong>
       </div>

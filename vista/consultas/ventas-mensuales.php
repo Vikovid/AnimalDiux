@@ -109,7 +109,7 @@
   <?php if($vm_scu!=""){ ?>
           <span>&nbsp;&nbsp;&nbsp;&nbsp;</span>
           <span>Sucursal:</span>
-          <?php echo $nomSucursal; ?>
+          <?php echo remove_junk($nomSucursal); ?>
   <?php } ?>
 
 <div class="row">
@@ -226,7 +226,7 @@
                   <tr> 
                   <?php if ($ventaDia > 0 || $gastoDia > 0){ ?>
                            <td> <?php echo $fechaMov; ?></td>
-                           <td class="text-center"> <?php echo $nomSucursal; ?></td>
+                           <td class="text-center"> <?php echo remove_junk($nomSucursal); ?></td>
                            <td class="text-right"> <?php echo money_format('%.2n',$ventaDia); ?></td>
                            <td class="text-right"> <?php echo money_format('%.2n',$gastoDia); ?></td>
                            <?php $totalDia = $ventaDia - $gastoDia; ?>

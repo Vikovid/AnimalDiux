@@ -163,7 +163,7 @@ function actContrasenia($pass,$id){
 function page_require_level($require_level){
    global $session;
    $current_user = current_user();
-   $login_level =  find_by_groupLevel($current_user['user_level']);
+   $login_level = find_by_groupLevel($current_user['user_level']);
    //if user not login
    if (!$session->isUserLoggedIn(true)):
       $session->msg('d','Por favor Iniciar sesión...');
@@ -365,7 +365,52 @@ function borraRegistroPorCampo($tabla,$campo,$valor){
    }
 }
 
-function join_historico_table(){
+function histProductos($producto,$sucursal,$categoria){
+   global $db;
+
+   $sql  ="SELECT H.idHistorico,M.movimiento,P.name,S.nom_sucursal,H.comentario,H.qtyin,";
+   $sql .="H.qtyfinal,H.usuario,H.vendedor,H.fechaMov,H.horaMov,C.name AS categoria ";
+   $sql .="FROM historico H,movimiento M,products P,sucursal S,categories C ";
+   $sql .="WHERE M.id_movimiento = H.id_movimiento AND P.id = H.id_producto ";
+
+   if ($producto == ""){
+      if ($sucursal == "" && $categoria == "")
+         $sql .="AND S.idSucursal = H.idSucursal AND P.categorie_id = C.id ";
+      if ($sucursal == "" && $categoria != "")
+         $sql .="AND S.idSucursal = H.idSucursal AND P.categorie_id = $categoria AND C.id = $categoria ";
+      if ($sucursal != "" && $categoria == "")
+         $sql .="AND S.idSucursal = $sucursal AND P.categorie_id = C.id ";
+      if ($sucursal != "" && $categoria != "")
+         $sql .="AND S.idSucursal = $sucursal AND P.categorie_id = $categoria AND C.id = $categoria ";
+   }else{
+      if (is_numeric($producto)){
+         if ($sucursal == "" && $categoria == "")
+            $sql .="AND P.Codigo = $producto AND S.idSucursal = H.idSucursal AND P.categorie_id = C.id ";
+         if ($sucursal == "" && $categoria != "")
+            $sql .="AND P.Codigo = $producto AND S.idSucursal = H.idSucursal AND P.categorie_id = $categoria AND C.id = $categoria ";
+         if ($sucursal != "" && $categoria == "")
+            $sql .="AND P.Codigo = $producto AND S.idSucursal = $sucursal AND P.categorie_id = C.id ";
+         if ($sucursal != "" && $categoria != "")
+            $sql .="AND P.Codigo = $producto AND S.idSucursal = $sucursal AND P.categorie_id = $categoria AND C.id = $categoria ";
+      }else{
+         if ($sucursal == "" && $categoria == "")
+            $sql .="AND P.name like '%$producto%' AND S.idSucursal = H.idSucursal AND P.categorie_id = C.id ";
+         if ($sucursal == "" && $categoria != "")
+            $sql .="AND P.name like '%$producto%' AND S.idSucursal = H.idSucursal AND P.categorie_id = $categoria AND C.id = $categoria ";
+         if ($sucursal != "" && $categoria == "")
+            $sql .="AND P.name like '%$producto%' AND S.idSucursal = $sucursal AND P.categorie_id = C.id ";
+         if ($sucursal != "" && $categoria != "")
+            $sql .="AND P.name like '%$producto%' AND S.idSucursal = $sucursal AND P.categorie_id = $categoria AND C.id = $categoria ";
+      }
+   }
+
+   $sql .= "ORDER BY H.idHistorico DESC LIMIT 1000";
+
+   return find_by_sql($sql);
+}
+
+// Funciones candidatas a ser borradas
+/*function join_historico_table(){
    global $db;
    
    $sql  ="SELECT H.idHistorico,M.movimiento,P.name,S.nom_sucursal,H.comentario,H.qtyin,";
@@ -435,7 +480,7 @@ function join_his_table2a($codigo){
    $sql .="AND P.name like '%$codigo%' ORDER BY H.idHistorico DESC";
 
    return find_by_sql($sql);
-}
+}*/
 
 function histEfecUsuSuc($p_usu,$p_suc){
    global $db;
@@ -610,7 +655,6 @@ function join_product_table(){
 /* Function for Finding product name
 /* JOIN with categorie and media database table
 /*--------------------------------------------------------------*/
-//Numérico
 function join_product_table1($codigo,$categoria,$subcategoria){
    global $db;
 
@@ -640,27 +684,11 @@ function join_product_table1($codigo,$categoria,$subcategoria){
 
    return find_by_sql($sql);
 }
-// function join_product_table1($codigo,$categoria){
-//    global $db;
-
-//    $sql  ="SELECT p.id,p.name,p.quantity,p.buy_price,p.idSucursal,p.sale_price,p.foto,p.fechaRegistro,c.name ";
-//    $sql .="AS categorie,s.nom_sucursal AS sucursal,sc.nombre ";
-//    $sql .="FROM products p ";
-//    $sql .="LEFT JOIN categories c ON c.id = p.categorie_id ";
-//    $sql .="LEFT JOIN sucursal s ON s.idSucursal = p.idSucursal ";
-//    $sql .="LEFT JOIN subcategorias sc ON sc.idCategoria = c.id ";      
-//    $sql .="AND p.idSubcategoria = sc.idSubCategoria ";
-//    $sql .="WHERE p.Codigo = $codigo and c.id = $categoria ";
-//    $sql .="ORDER BY p.name ASC";
-
-//    return find_by_sql($sql);
-// }
 
 /*--------------------------------------------------------------*/
 /* Function for Finding product name
 /* JOIN with categorie and media database table
 /*--------------------------------------------------------------*/
-// Alfanumérico
 function join_product_table2($codigo,$categoria,$subcategoria){
    global $db;
 
@@ -690,21 +718,6 @@ function join_product_table2($codigo,$categoria,$subcategoria){
  
    return find_by_sql($sql);
 }
-// function join_product_table2($codigo,$categoria){
-//    global $db;
-
-//    $sql  ="SELECT p.id,p.name,p.quantity,p.idSucursal,p.buy_price,p.sale_price,p.foto,p.fechaRegistro,c.name ";
-//    $sql .="AS categorie,s.nom_sucursal AS sucursal,sc.nombre ";
-//    $sql .="FROM products p ";
-//    $sql .="LEFT JOIN categories c ON c.id = p.categorie_id ";
-//    $sql .="LEFT JOIN sucursal s ON s.idSucursal = p.idSucursal ";
-//    $sql .="LEFT JOIN subcategorias sc ON sc.idCategoria = c.id ";      
-//    $sql .="AND p.idSubcategoria = sc.idSubCategoria ";
-//    $sql .="WHERE p.name like '%$codigo%' AND c.id = $categoria ";
-//    $sql .="ORDER BY p.name ASC";
- 
-//    return find_by_sql($sql);
-// }
 
 function join_select_categories($categoria){
    global $db;
@@ -722,23 +735,6 @@ function join_select_categories($categoria){
    return find_by_sql($sql);
 }
 
-function join_select_subcategories($categoria, $subcategoria){
-   global $db;
-
-   $sql  ="SELECT p.id,p.name,p.quantity,p.buy_price,p.sale_price,p.idSucursal,p.foto,p.fechaRegistro,c.name ";
-   $sql .="AS categorie,s.nom_sucursal AS sucursal,sc.nombre ";
-   $sql .="FROM products p ";
-   $sql .="LEFT JOIN sucursal s ON s.idSucursal = p.idSucursal ";
-   $sql .="LEFT JOIN categories c ON c.id = p.categorie_id ";
-   $sql .="LEFT JOIN subcategorias sc ON sc.idCategoria = c.id ";      
-   $sql .="AND p.idSubcategoria = sc.idSubCategoria ";
-   $sql .="WHERE c.id = '$categoria' AND sc.idSubCategoria= '$subcategoria'";
-   $sql .="ORDER BY p.name ASC";
-
-   return find_by_sql($sql);
-}
-
-// Numérico
 function join_product_table1a($codigo){
    global $db;
 
@@ -755,7 +751,6 @@ function join_product_table1a($codigo){
    return find_by_sql($sql);
 }
 
-// Por nombre
 function join_product_table2a($codigo){
    global $db;
 
@@ -1062,41 +1057,25 @@ function actCantidad($tabla,$campo,$multiplo,$precio,$clave){
    return($db->affected_rows() === 1 ? true : false);
 }
 
-function join_gastos_table(){
+function join_gastos_table2(){
    global $db;
 
-   $sql = "SELECT g.id, g.descripcion, g.monto, g.fecha, g.categoria, g.iva, g.total, p.nom_proveedor, ";
-   $sql .= "p.idProveedor, tp.tipo_pago, tp.id_pago, c.name, sc.nombre, g.factura ";
-   $sql .= "FROM gastos g LEFT JOIN tipo_pago tp ON g.tipo_pago = tp.id_pago ";
-   $sql .= "LEFT JOIN proveedor p ON g.idProveedor = p.idProveedor ";
-   $sql .= "LEFT JOIN categories c ON g.categoria = c.id ";
-   $sql .= "LEFT JOIN subcategorias sc ON g.subCategoria = sc.idSubCategoria ";
-   $sql .= "AND g.categoria = sc.idCategoria ORDER BY g.fecha DESC ";
+   $sql  =" SELECT g.id,g.descripcion,g.monto,g.fecha,g.categoria,g.iva,g.total,p.nom_proveedor,";
+   $sql .="p.idProveedor,a.tipo_pago,a.id_pago,c.name ";
+   $sql .="FROM gastos g,proveedor p,tipo_pago a,categories c WHERE g.tipo_pago=a.id_pago ";
+   $sql .="and g.idProveedor = p.idProveedor and g.categoria = c.id ORDER BY g.fecha DESC";
 
    return find_by_sql($sql);
-}
-function join_gastos_table2($fechaIni,$fechaFin){
-   global $db;
+}   
 
-   $sql = "SELECT g.id, g.descripcion, g.monto, g.fecha, g.categoria, g.iva, g.total, p.nom_proveedor, ";
-   $sql .= "p.idProveedor, tp.tipo_pago, tp.id_pago, c.name, sc.nombre, g.factura ";
-   $sql .= "FROM gastos g LEFT JOIN tipo_pago tp ON g.tipo_pago = tp.id_pago ";
-   $sql .= "LEFT JOIN proveedor p ON g.idProveedor = p.idProveedor ";
-   $sql .= "LEFT JOIN categories c ON g.categoria = c.id ";
-   $sql .= "LEFT JOIN subcategorias sc ON g.subCategoria = sc.idSubCategoria ";
-   $sql .= "AND g.categoria = sc.idCategoria WHERE g.fecha BETWEEN '$fechaIni' AND '$fechaFin' ORDER BY g.fecha DESC ";
-
-   return find_by_sql($sql);
-}
-
-function altaGasto($descripcion,$precioCompra,$fecha,$proveedor,$sucursal,$tipoPago,$categoria,$iva,$total,$subcategoria,$factura){
+function altaGasto($descripcion,$precioCompra,$fecha,$proveedor,$sucursal,$tipoPago,$categoria,$iva,$total,$subcategoria){
    global $db;
 
    $sql  = "INSERT INTO gastos (";
-   $sql .=" id,descripcion,monto,fecha,idProveedor,idSucursal,tipo_pago,categoria,iva,total,subCategoria,factura";
+   $sql .=" id,descripcion,monto,fecha,idProveedor,idSucursal,tipo_pago,categoria,iva,total,subCategoria";
    $sql .=") VALUES (";
    $sql .=" '','{$descripcion}','{$precioCompra}','{$fecha}','{$proveedor}','{$sucursal}',";
-   $sql .="'{$tipoPago}','{$categoria}','{$iva}','{$total}','{$subcategoria}','{$factura}'";
+   $sql .="'{$tipoPago}','{$categoria}','{$iva}','{$total}','{$subcategoria}'";
    $sql .=")";
 
    $db->query($sql);
@@ -1116,13 +1095,13 @@ function altaHisEfectivo($movimiento,$montoActual,$montoFinal,$idSucursal,$usuar
    return ($db->affected_rows() === 1) ? true : false;
 }
 
-function actGasto($descripcion,$precioCompra,$proveedor,$categoria,$subcategoria,$tipoPago,$fecha,$iva,$total,$idGasto,$factura){
+function actGasto($descripcion,$precioCompra,$proveedor,$categoria,$subcategoria,$tipoPago,$fecha,$iva,$total,$idGasto){
    global $db;
 
    $sql  ="UPDATE gastos SET ";
    $sql .="descripcion ='{$descripcion}',monto ='{$precioCompra}',idProveedor = '{$proveedor}',";
    $sql .="categoria = '{$categoria}',tipo_pago = '{$tipoPago}',fecha = '{$fecha}',";
-   $sql .="iva = '{$iva}',total = '{$total}',subCategoria = '{$subcategoria}', factura = '{$factura}' ";
+   $sql .="iva = '{$iva}',total = '{$total}',subCategoria = '{$subcategoria}' ";
    $sql .="WHERE id ='{$idGasto}'";
 
    $db->query($sql);
@@ -1146,13 +1125,14 @@ function gastosMAP($prove,$fechaIni,$fechaFin){
 function gastosMesAnio($fechaIni,$fechaFin){
    global $db;
 
-   $sql  = "SELECT g.fecha,g.descripcion,g.total,p.nom_proveedor,tp.tipo_pago,c.name ";
-   $sql .= "FROM gastos g ";
-   $sql .= "INNER JOIN proveedor p ON g.idProveedor = p.idProveedor ";
-   $sql .= "INNER JOIN tipo_pago tp ON g.tipo_pago = tp.id_pago ";
-   $sql .= "INNER JOIN categories c ON g.categoria = c.id ";
-   $sql .= "WHERE g.fecha BETWEEN '{$fechaIni}' AND '{$fechaFin}' ";
-   $sql .= "ORDER BY g.fecha DESC";
+   $sql = " SELECT g.id,g.idProveedor,g.categoria,g.tipo_pago, ";
+   $sql.= " g.fecha,g.descripcion,g.total,p.nom_proveedor,tp.tipo_pago,c.name ";
+   $sql.= " FROM gastos g ";
+   $sql.= " INNER JOIN proveedor p ON g.idProveedor = p.idProveedor ";
+   $sql.= " INNER JOIN tipo_pago tp ON g.tipo_pago = tp.id_pago ";
+   $sql.= " INNER JOIN categories c ON g.categoria = c.id ";
+   $sql.= " WHERE g.fecha BETWEEN '{$fechaIni}' AND '{$fechaFin}' ";
+   $sql.= " ORDER BY g.fecha DESC ";
 
    return $db->query($sql);
 }
@@ -1211,13 +1191,14 @@ function gastosMesAnioTotal($fechaIni,$fechaFin){
 function gastosMAC($categ,$fechaIni,$fechaFin){
    global $db;
 
-   $sql  = " SELECT g.fecha,g.descripcion,g.total,p.nom_proveedor,tp.tipo_pago,c.name ";
-   $sql .= "FROM gastos g ";
-   $sql .= "INNER JOIN proveedor p ON g.idProveedor = p.idProveedor ";
-   $sql .= "INNER JOIN tipo_pago tp ON g.tipo_pago = tp.id_pago ";
-   $sql .= "INNER JOIN categories c ON g.categoria = c.id ";
-   $sql .= "WHERE c.id =$categ AND g.fecha BETWEEN '{$fechaIni}' AND '{$fechaFin}' ";
-   $sql .= "ORDER BY g.fecha DESC";
+   $sql = " SELECT g.id,g.idProveedor,g.categoria,g.tipo_pago, ";
+   $sql.= " g.fecha,g.descripcion,g.total,p.nom_proveedor,tp.tipo_pago,c.name ";
+   $sql.= " FROM gastos g ";
+   $sql.= " INNER JOIN proveedor p ON g.idProveedor = p.idProveedor ";
+   $sql.= " INNER JOIN tipo_pago tp ON g.tipo_pago = tp.id_pago ";
+   $sql.= " INNER JOIN categories c ON g.categoria = c.id ";
+   $sql.= " WHERE c.id =$categ AND g.fecha BETWEEN '{$fechaIni}' AND '{$fechaFin}' ";
+   $sql.= " ORDER BY g.fecha DESC";
   
    return $db->query($sql);
 }
@@ -1705,22 +1686,6 @@ function find_sale_by_dates_suc($start_date,$end_date,$sucursal){
    return $db->query($sql);
 }
 
-// function ventasCatTotal($categ,$fechaIni,$fechaFin){
-//    global $db;
-
-//    $sql  ="SELECT SUM(s.price) as total,SUM(s.qty) as cantidad ";
-//    $sql .="FROM sales s,products p,categories c ";
-//    $sql .="WHERE p.categorie_id = $categ AND p.categorie_id = c.id AND s.product_id = p.id ";
-//    $sql .="AND s.date BETWEEN '{$fechaIni}' AND '{$fechaFin}' ";
-
-//    $query = $db->query($sql);
-   
-//    if($result = $db->fetch_assoc($query))
-//       return $result;
-//    else
-//       return null;
-// }
-
 function ventasCatTotal($categ,$fechaIni,$fechaFin){
    global $db;
 
@@ -1767,69 +1732,19 @@ function monthlycatsuc($sucursal,$fechaIni,$fechaFin){
   return $db->query($sql);
 }
 
-// function monthlycat1($fechaIni, $fechaFin){
-//    global $db;
+function monthlycat1($fechaIni,$fechaFin){
+  global $db;
 
-//    $sql  = "SELECT a.name,d.nombre,a.id, ";
-//    $sql .= "SUM(c.qty) as cantidad, ";
-//    $sql .= "SUM(c.price-b.buy_price * c.qty) AS ganancia, ";
-//    $sql .= "SUM(b.sale_price * c.qty) AS precio_total ";
-//    $sql .= "FROM categories a, products b, sales c, subcategorias d ";
-//    $sql .= "WHERE b.categorie_id = a.id AND c.product_id = b.id AND ";
-//    $sql .= "c.idCategoria = d.idCategoria AND c.date ";
-//    $sql .= "BETWEEN '{$fechaIni}' AND '{$fechaFin}' GROUP BY (a.name)";
+  $sql  ="SELECT a.name,a.id, ";
+  $sql .="SUM(c.qty) as cantidad,";
+  $sql .="SUM(c.price-b.buy_price * c.qty) AS ganancia, ";
+  $sql .="SUM(b.sale_price * c.qty) AS precio_total  ";
+  $sql .="FROM categories a, products b, sales c ";
+  $sql .="WHERE b.categorie_id = a.id AND c.product_id= b.id ";
+  $sql .="AND c.date BETWEEN '{$fechaIni}' AND '{$fechaFin}' ";
+  $sql .="GROUP BY (a.name)";
 
-//    return $db->query($sql);
-// }
-
-function monthlycat1($fechaIni, $fechaFin){
-   global $db;
-
-   $sql  = "SELECT c.name AS categoria, sc.nombre AS subCat, COALESCE(s.cantVentas,0) AS cantVentas, ";
-   $sql .= "COALESCE(s.ventas, 0) AS ventas, COALESCE(g.gasto, 0) AS gasto, COALESCE(s.ventas, 0) - COALESCE(g.gasto, 0) AS ganancia ";
-   $sql .= "FROM categories c LEFT JOIN subcategorias sc ON c.id = sc.idCategoria LEFT JOIN ( SELECT categoria, ";
-   $sql .= "subCategoria, SUM(total) AS gasto FROM gastos WHERE fecha BETWEEN '{$fechaIni}' AND '{$fechaFin}' ";
-   $sql .= "GROUP BY categoria, subCategoria ) g ON g.categoria = c.id AND ";
-   $sql .= "(g.subCategoria = sc.idSubCategoria OR (g.subCategoria = 0 AND sc.idSubCategoria IS NULL)) LEFT JOIN ( ";
-   $sql .= "SELECT idCategoria, idSubCategoria, COUNT(qty) AS cantVentas, SUM(price) AS ventas FROM sales WHERE ";
-   $sql .= "date BETWEEN '{$fechaIni}' AND '{$fechaFin}' GROUP BY idCategoria, idSubCategoria ) s ON ";
-   $sql .= "s.idCategoria = c.id AND (s.idSubCategoria = sc.idSubCategoria OR (s.idSubCategoria = 0 AND sc.idSubCategoria IS NULL)) ";
-   $sql .= "HAVING (ventas OR gasto) <> 0";
-
-   return $db->query($sql);
-}
-
-function monthlycateg1($fechaIni, $fechaFin, $categoria){
-   global $db;
-
-   $sql  = "SELECT c.name AS categoria, sc.nombre AS subCat, COALESCE(s.cantVentas,0) AS cantVentas, COALESCE(s.ventas, 0) AS ventas, ";
-   $sql .= "COALESCE(g.gasto, 0) AS gasto, COALESCE(s.ventas, 0) - COALESCE(g.gasto, 0) AS ganancia FROM categories c ";
-   $sql .= "LEFT JOIN subcategorias sc ON c.id = sc.idCategoria LEFT JOIN (SELECT categoria, subCategoria, SUM(total) AS gasto ";
-   $sql .= "FROM gastos WHERE fecha BETWEEN '{$fechaIni}' AND '{$fechaFin}' AND categoria = '{$categoria}' GROUP BY ";
-   $sql .= "categoria, subCategoria) g ON g.categoria = c.id AND (g.subCategoria = sc.idSubCategoria OR (g.subCategoria = 0 ";
-   $sql .= "AND sc.idSubCategoria IS NULL)) LEFT JOIN (SELECT idCategoria, idSubCategoria, COUNT(qty) AS cantVentas, ";
-   $sql .= "SUM(price) AS ventas FROM sales WHERE date BETWEEN '{$fechaIni}' AND '{$fechaFin}' AND idCategoria = '{$categoria}' ";
-   $sql .= "GROUP BY idCategoria, idSubCategoria) s ON s.idCategoria = c.id AND (s.idSubCategoria = sc.idSubCategoria OR ";
-   $sql .= "(s.idSubCategoria = 0 AND sc.idSubCategoria IS NULL)) HAVING (ventas OR gasto) <> 0";
-
-   return $db->query($sql);
-}
-
-function monthlySubcateg1($fechaIni, $fechaFin, $categoria, $subCat){
-   global $db;
-
-   $sql  = "SELECT c.name AS categoria, sc.nombre AS subCat, COALESCE(s.cantVentas,0) AS cantVentas, COALESCE(s.ventas, 0) AS ventas, ";
-   $sql .= "COALESCE(g.gasto, 0) AS gasto, COALESCE(s.ventas, 0) - COALESCE(g.gasto, 0) AS ganancia FROM categories c ";
-   $sql .= "LEFT JOIN subcategorias sc ON c.id = sc.idCategoria LEFT JOIN (SELECT categoria, subCategoria, SUM(total) AS gasto ";
-   $sql .= "FROM gastos WHERE fecha BETWEEN '{$fechaIni}' AND '{$fechaFin}' AND categoria = '{$categoria}' AND ";
-   $sql .= "subCategoria = '{$subCat}' GROUP BY categoria, subCategoria) g ON g.categoria = c.id AND ";
-   $sql .= "(g.subCategoria = sc.idSubCategoria OR (g.subCategoria = 0 AND sc.idSubCategoria IS NULL)) LEFT JOIN (SELECT ";
-   $sql .= "idCategoria, idSubCategoria, COUNT(qty) AS cantVentas, SUM(price) AS ventas FROM sales WHERE ";
-   $sql .= "date BETWEEN '{$fechaIni}' AND '{$fechaFin}' AND idCategoria = '{$categoria}' AND idSubCategoria = '{$subCat}' ";
-   $sql .= "GROUP BY idCategoria, idSubCategoria) s ON s.idCategoria = c.id AND (s.idSubCategoria = sc.idSubCategoria OR ";
-   $sql .= "(s.idSubCategoria = 0 AND sc.idSubCategoria IS NULL)) HAVING (ventas OR gasto) <> 0";
-
-   return $db->query($sql);
+  return $db->query($sql);
 }
 
 function ventasPeriodoSuc($sucursal,$fechaIni,$fechaFin){
@@ -2258,7 +2173,7 @@ function mascotas(){
    global $db;
 
    $sql  ="SELECT a.idMascotas,a.nombre,b.nom_cliente FROM cliente b,Mascotas a ";
-   $sql .="WHERE a.idCliente = b.idcredencial LIMIT 30";
+   $sql .="WHERE a.idCliente = b.idcredencial";
 
    return find_by_sql($sql);
 }
@@ -2276,7 +2191,7 @@ function buscaMascotaNombre($nombre){
    global $db;
 
    $sql  ="SELECT a.idMascotas,a.nombre,b.nom_cliente FROM cliente b,Mascotas a ";
-   $sql .="WHERE a.idCliente = b.idcredencial and a.nombre like '%$nombre%' LIMIT 30";
+   $sql .="WHERE a.idCliente = b.idcredencial and a.nombre like '%$nombre%'";
 
    return find_by_sql($sql);
 }
@@ -2348,8 +2263,8 @@ function buscaEsteticas($idMascota){
 function buscaVacunas($idMascota){
    global $db;
 
-   $sql ="SELECT idvacuna,fecha,vacuna FROM vacuna WHERE idMascota = $idMascota ";
-   $sql.="ORDER BY fecha DESC LIMIT 10";
+   $sql ="SELECT idvacuna,fecha,vacuna,nota FROM vacuna WHERE idMascota = $idMascota ";
+   $sql.="ORDER BY fecha DESC LIMIT 10";  
 
    return find_by_sql($sql);
 }
@@ -2388,12 +2303,12 @@ function buscaVacunasAsc($idMascota){
    return $db->query($sql);
 }
 
-function altaConsulta($receta,$diagnostico,$problema,$peso,$temperatura,$idMascota,$fecha,$costo,$usuario,$Nota){
+function altaConsulta($receta,$diagnostico,$problema,$peso,$temperatura,$idMascota,$fecha,$costo,$usuario,$Nota,$hora){
    global $db;
 
    $sql  ="INSERT INTO Consulta (idconsulta,consulta,diagnostico,problema,peso,temperatura,idMascota,";
-   $sql .="fecha,costo,responsable,nota) VALUES ('','{$receta}','{$diagnostico}','{$problema}','{$peso}',";
-   $sql .="'{$temperatura}','{$idMascota}','{$fecha}','{$costo}','{$usuario}','{$Nota}')";
+   $sql .="fecha,costo,responsable,nota,hora) VALUES ('','{$receta}','{$diagnostico}','{$problema}','{$peso}',";
+   $sql .="'{$temperatura}','{$idMascota}','{$fecha}','{$costo}','{$usuario}','{$Nota}','{$hora}')";
 
    $db->query($sql);
  
@@ -2459,12 +2374,12 @@ function altaDesparacitacion($responsable,$desparasitante,$costo,$fecha,$idMasco
    return ($db->affected_rows() === 1) ? true : false;
 }
 
-function altaAplicacion($responsable,$solucion,$cantidad,$fechaActual,$idMascota,$fechaCaducidad,$fechaAplicacion,$nota){
+function altaAplicacion($responsable,$solucion,$cantidad,$fechaActual,$idMascota,$fechaAplicacion,$nota){
    global $db;
 
-   $sql  ="INSERT INTO aplicacion ( idAplicacion,responsable,solucion,cantidad,fecha,idMascota,";
-   $sql .="fechaCaducidad,fechaSigAplicacion,nota) VALUES ('','{$responsable}','{$solucion}','{$cantidad}',";
-   $sql .="'{$fechaActual}','{$idMascota}','{$fechaCaducidad}','{$fechaAplicacion}','{$nota}')";
+   $sql  =" INSERT INTO aplicacion ( idAplicacion,responsable,solucion,cantidad,fecha,idMascota, ";
+   $sql .=" fechaSigAplicacion,nota) VALUES ('','{$responsable}','{$solucion}','{$cantidad}', ";
+   $sql .=" '{$fechaActual}','{$idMascota}','{$fechaAplicacion}','{$nota}') ";
 
    $db->query($sql);
  
@@ -2508,18 +2423,6 @@ function altaCita($idMascota,$responsable,$fechaCita,$horaCita,$nota,$fechaActua
    return ($db->affected_rows() === 1) ? true : false;
 }
 
-function altaCitaEvent($idMascota,$responsable,$fechaCita,$horaCita,$nota,$fechaActual,$idSucursal,$idEvent){
-   global $db;
-
-   $sql  ="INSERT INTO cita (id,idMascota,responsable,fecha_cita,hora,nota,fecha_solicitud,idSucursal,idEvent) ";
-   $sql .="VALUES ('','{$idMascota}','{$responsable}','{$fechaCita}','{$horaCita}','{$nota}',";
-   $sql .="'{$fechaActual}','{$idSucursal}','$idEvent')";
-
-   $db->query($sql);
- 
-   return ($db->affected_rows() === 1) ? true : false;
-}
-
 function actVacuna($responsable,$vacuna,$fechaCad,$fechaSigVacuna,$nota,$idVacuna){
    global $db;
 
@@ -2543,12 +2446,12 @@ function actEstetica($responsable,$nota,$hora,$idEstetica){
    return($db->affected_rows() === 1 ? true : false);
 }
 
-function actConsulta($receta,$problema,$temperatura,$peso,$diagnostico,$nota,$fecha,$idConsulta){
+function actConsulta($receta,$problema,$temperatura,$peso,$diagnostico,$nota,$fecha,$hora,$idConsulta){
    global $db;
 
    $sql  ="UPDATE Consulta SET consulta = '{$receta}',problema = '{$problema}',";
    $sql .="temperatura = '{$temperatura}',peso = '{$peso}',diagnostico = '{$diagnostico}',";
-   $sql .="nota = '{$nota}',fecha = '{$fecha}' WHERE idconsulta = '{$idConsulta}'";
+   $sql .="nota = '{$nota}',fecha = '{$fecha}', hora = '{$hora}' WHERE idconsulta = '{$idConsulta}'";
 
    $db->query($sql);
    
@@ -2579,16 +2482,12 @@ function citasFecha($fechaIni,$fechaFin){
    return $db->query($sql);
 }
 
-function actCita($responsable,$fechaCita,$nota,$hora,$fechaActual,$idCita,$idEvent){
+function actCita($responsable,$fechaCita,$nota,$hora,$fechaActual,$idCita){
    global $db;
 
-   $sql = "UPDATE cita SET responsable = '{$responsable}',fecha_cita = '{$fechaCita}',nota = '{$nota}',";
-   $sql.= "hora = '{$hora}',fecha_solicitud = '{$fechaActual}' ";
-   
-   if ($idEvent != '')
-      $sql .= " ,idEvent = '{$idEvent}' ";
-   
-   $sql.= "WHERE id = '{$idCita}'";
+   $sql  ="UPDATE cita SET responsable = '{$responsable}',fecha_cita = '{$fechaCita}',nota = '{$nota}',";
+   $sql .="hora = '{$hora}',fecha_solicitud = '{$fechaActual}' WHERE id = '{$idCita}'";
+
    $db->query($sql);
    
    return($db->affected_rows() === 1 ? true : false);
@@ -2612,20 +2511,22 @@ function buscaSoluciones($nombre){
    return find_by_sql($sql);
 }
 
-function actSolucion($nombre,$cantidad,$idSolucion){
+function actSolucion($nombre,$cantidad,$fechaCaducidad,$idSolucion){
    global $db;
 
-   $sql ="UPDATE soluciones SET nombre = '{$nombre}',cantidad = '{$cantidad}' WHERE id = '{$idSolucion}'";
+   $sql = " UPDATE soluciones SET nombre = '{$nombre}', cantidad = '{$cantidad}', ";
+   $sql.= " fechaCaducidad = '{$fechaCaducidad}' ";
+   $sql.= " WHERE id = '{$idSolucion}' ";
 
    $db->query($sql);
    
    return($db->affected_rows() === 1 ? true : false);
 }
 
-function altaSolucion($nombre,$cantidad){
+function altaSolucion($nombre,$cantidad,$fechaCaducidad){
    global $db;
 
-   $sql  ="INSERT INTO soluciones (nombre,cantidad) VALUES ('{$nombre}','{$cantidad}') ";
+   $sql  ="INSERT INTO soluciones (nombre,cantidad,fechaCaducidad) VALUES ('{$nombre}','{$cantidad}','{$fechaCaducidad}') ";
    $sql .="ON DUPLICATE KEY UPDATE nombre = '{$nombre}'";
 
    $db->query($sql);
@@ -2707,12 +2608,12 @@ function buscaDesparasitacionesXResp($fechaIni,$fechaFin){
    return find_by_sql($sql);
 }
 
-function actDatosProducto($nombre,$nuevoStock,$fechaAct,$categoria,$precCompra,$precVenta,$cantCaja,$precioCaja,$idProducto){
+function actDatosProducto($nombre,$nuevoStock,$fechaAct,$categoria,$precCompra,$precVenta,$cantCaja,$precioCaja,$idProducto,$subcategoria,$codigo){
    global $db;
 
    $sql  ="UPDATE products SET name = '{$nombre}',quantity = '{$nuevoStock}',fechaMod = '{$fechaAct}',";
    $sql .="categorie_id = '{$categoria}',buy_price = '{$precCompra}',sale_price = '{$precVenta}', ";
-   $sql .="cantidadCaja = '{$cantCaja}',precioCaja = '{$precioCaja}' ";
+   $sql .="cantidadCaja = '{$cantCaja}',precioCaja = '{$precioCaja}',idSubcategoria = '{$subcategoria}',Codigo = '{$codigo}' ";
    $sql .="WHERE id ='{$idProducto}'";
 
    $db->query($sql);
@@ -2782,34 +2683,35 @@ function ventasTipoPagoPer($fechaIni,$fechaFin){
 }
 
 function totalVentasTipoPagoPer($tipoPago,$fechaIni,$fechaFin){
-   global $db;
+  global $db;
 
-   $sql  ="SELECT SUM(p.cantidad) as total ";
-   $sql .="FROM pagos p,tipo_pago tp ";
-   $sql .="WHERE p.id_tipo = tp.id_pago AND p.fecha BETWEEN '{$fechaIni}' AND '{$fechaFin}' ";
-   $sql .="AND p.id_tipo = '$tipoPago' ";
+  $sql  ="SELECT SUM(p.cantidad) as total ";
+  $sql .="FROM pagos p,tipo_pago tp ";
+  $sql .="WHERE p.id_tipo = tp.id_pago AND p.fecha BETWEEN '{$fechaIni}' AND '{$fechaFin}' ";
+  $sql .="AND p.id_tipo = '$tipoPago' ";
 
-   $query = $db->query($sql);
-   if($result = $db->fetch_assoc($query))
-      return $result;
-   else
-      return null;
+  $query = $db->query($sql);
+  if($result = $db->fetch_assoc($query))
+     return $result;
+  else
+     return null;
 }
 
 
 function resetCaja($fecha){
-   global $db;
-
-   $consCaja =  buscaRegistroMaximo("caja","id");
-   $fechaCaja = $consCaja['fecha'];
-   $idCaja =    $consCaja['id'];
+  global $db;
  
-   if ($fechaCaja < $fecha){
-      $sqlCaja = "UPDATE caja SET monto = '0',fecha = '{$fecha}' WHERE id = '$idCaja'";  
-      $result = $db->query($sqlCaja);
-      return $result;
-   } else
-      return false;
+  $consCaja = buscaRegistroMaximo("caja","id");
+  $fechaCaja=$consCaja['fecha'];
+  $idCaja = $consCaja['id'];
+ 
+  if ($fechaCaja < $fecha){
+     $sqlCaja = "UPDATE caja SET monto = '0',fecha = '{$fecha}' WHERE id = '$idCaja'";  
+     $result = $db->query($sqlCaja);
+     return $result;
+  }else{
+     return false;
+  }
 }
 
 function pagoCreditoDia($idSucursal,$fecha,$tipoPago){
@@ -2866,12 +2768,6 @@ function categorias(){
    return $db->query($sql);
 }
 
-function obtenSubCat($idCategoria){
-   global $db;
-   $sql = "SELECT * FROM subcategories WHERE idCategoria = {'$idCategoria'}";
-   return $dq->query($sql);
-}
-
 function altaMovsEstetica($idProducto,$idSucursal,$idUsuario,$vendedor,$ventaLV,$ventaSD,$comisionLV,$comisionSD,$idCliente,$idTicket,$movimiento,$fecha,$hora){
    global $db;
 
@@ -2889,10 +2785,13 @@ function buscaProdHistEstetica($idProducto,$idTicket){
    global $db;
 
    $sql .="SELECT * FROM histestetica WHERE idProducto = $idProducto AND id_ticket = $idTicket";
+
    $query = $db->query($sql);
   
-   if($result = $db->fetch_assoc($query)) return $result;
-   else return null;
+   if($result = $db->fetch_assoc($query))
+      return $result;
+   else
+      return null;
 }
 
 function numTiposPagos($idTicket){
@@ -2923,14 +2822,16 @@ function sumaCampoTemp($aSumar,$tabla,$campo,$valor,$usuario){
 
 function categoria($nombre){
    global $db;
-   $sql ="SELECT * FROM categories WHERE name like '%$nombre%' /*LIMIT 5*/";
+
+   $sql ="SELECT * FROM categories WHERE name like '%$nombre%'";
+
    return find_by_sql($sql);
 }
 
 function buscaValorMaximo($tabla,$aBuscar,$campo,$valor){
    global $db;
 
-   $sql = "SELECT MAX($aBuscar) as valorMax FROM $tabla WHERE $campo = '$valor'";   
+   $sql = "SELECT MAX($aBuscar) as valorMax FROM $tabla WHERE $campo = '$valor'";
 
    $query = $db->query($sql);
 
@@ -2972,7 +2873,7 @@ function histConsUsuSuc($idUsuario,$idSucursal){
    $sql  ="SELECT u.username,c.nom_cliente,m.nombre,s.nom_sucursal,h.movimiento,h.fecha,h.hora ";
    $sql .="FROM users u, cliente c, Mascotas m, sucursal s, histconsulta h ";
    $sql .="WHERE h.idUsuario = $idUsuario and h.idSucursal = $idSucursal and h.idUsuario = u.id and h.idSucursal = s.idSucursal ";
-   $sql .="and h.idCliente = c.idcredencial and h.idMascota = m.idMascotas ORDER BY h.fecha DESC";
+   $sql .="and h.idCliente = c.idcredencial and h.idMascota = m.idMascotas ORDER BY h.fecha DESC,h.hora DESC";
 
    return find_by_sql($sql);
 }
@@ -2983,7 +2884,7 @@ function histConsSuc($idSucursal){
    $sql  ="SELECT u.username,c.nom_cliente,m.nombre,s.nom_sucursal,h.movimiento,h.fecha,h.hora ";
    $sql .="FROM users u, cliente c, Mascotas m, sucursal s, histconsulta h ";
    $sql .="WHERE h.idSucursal = $idSucursal and h.idUsuario = u.id and h.idSucursal = s.idSucursal ";
-   $sql .="and h.idCliente = c.idcredencial and h.idMascota = m.idMascotas ORDER BY h.fecha DESC";
+   $sql .="and h.idCliente = c.idcredencial and h.idMascota = m.idMascotas ORDER BY h.fecha DESC,h.hora DESC";
 
    return find_by_sql($sql);
 }
@@ -2994,7 +2895,7 @@ function histConsUsu($idUsuario){
    $sql  ="SELECT u.username,c.nom_cliente,m.nombre,s.nom_sucursal,h.movimiento,h.fecha,h.hora ";
    $sql .="FROM users u, cliente c, Mascotas m, sucursal s, histconsulta h ";
    $sql .="WHERE h.idUsuario = $idUsuario and h.idUsuario = u.id and h.idSucursal = s.idSucursal ";
-   $sql .="and h.idCliente = c.idcredencial and h.idMascota = m.idMascotas ORDER BY h.fecha DESC";
+   $sql .="and h.idCliente = c.idcredencial and h.idMascota = m.idMascotas ORDER BY h.fecha DESC,h.hora DESC";
     
    return find_by_sql($sql);
 }
@@ -3005,10 +2906,10 @@ function histConsulta(){
    $sql  ="SELECT u.username,c.nom_cliente,m.nombre,s.nom_sucursal,h.movimiento,h.fecha,h.hora ";
    $sql .="FROM users u, cliente c, Mascotas m, sucursal s, histconsulta h ";
    $sql .="WHERE h.idUsuario = u.id and h.idSucursal = s.idSucursal ";
-   $sql .="and h.idCliente = c.idcredencial and h.idMascota = m.idMascotas ORDER BY h.fecha DESC";
+   $sql .="and h.idCliente = c.idcredencial and h.idMascota = m.idMascotas ORDER BY h.fecha DESC,h.hora DESC";
 
    return find_by_sql($sql);
-}   
+}
 
 function actSubcategoria($nombre,$id){
    global $db;
@@ -3020,58 +2921,181 @@ function actSubcategoria($nombre,$id){
    return($db->affected_rows() === 1 ? true : false);
 }
 
-function gastosFactura($factura,$fechaIni,$fechaFin,$regCat,$regSubCat){
+function buscaSubCategorias($idCategoria, $nombre){
    global $db;
 
-   $sql =  "SELECT g.id, g.descripcion, g.monto, g.fecha, g.categoria, g.iva, g.total, p.nom_proveedor, p.idProveedor, ";
-   $sql .= "tp.tipo_pago, tp.id_pago, c.name, sc.nombre, g.factura FROM gastos g LEFT JOIN tipo_pago tp ON g.tipo_pago = tp.id_pago ";
-   $sql .= "LEFT JOIN proveedor p ON g.idProveedor = p.idProveedor LEFT JOIN categories c ON g.categoria = c.id ";
-   $sql .= "LEFT JOIN subcategorias sc ON g.subCategoria = sc.idSubCategoria AND g.categoria = sc.idCategoria WHERE (";
-   
-   if ($factura != '') {
-      if ($regCat != '' && $regSubCat != '') {
-         $sql .= "g.factura = '$factura' AND ";
-         if ($regCat != '' && $regSubCat != '')
-            $sql .= "c.id = '$regCat' AND sc.idSubCategoria = '$regSubCat'";
-         if ($regCat != '' && $regSubCat == '')
-            $sql .= "c.id = '$regCat'";
-      } else {
-         $sql .= "g.factura = '$factura' ";
-      }
-   } else {
-      if ($regCat != '' && $regSubCat != '')
-         $sql .= "c.id = '$regCat' AND sc.idSubCategoria = '$regSubCat'";
-      if ($regCat != '' && $regSubCat == '')
-         $sql .= "c.id = '$regCat'";
-   }
+   $sql = "SELECT * FROM `subcategorias` WHERE idCategoria = '$idCategoria' ";
+   if ($nombre != '')
+      $sql.= "AND nombre like '%$nombre%'";
 
-   $sql .= ") AND g.fecha BETWEEN '$fechaIni' AND '$fechaFin' ";
-   $sql .= "ORDER BY g.fecha DESC";
    return find_by_sql($sql);
-} 
+}
 
-function altaTempCatSubCat($categoria,$subcategoria,$cantidad,$venta,$gasto,$ganancia,$fechaInicial,$fechaFinal){
+function comisionesEstetica($responsable, $sucursal, $fechaIni, $fechaFin){
    global $db;
 
-   $sql  = "INSERT INTO tempcatsubcat (categoria,subcategoria,cantidad,venta,gasto,ganancia,fechaInicial,fechaFinal";
-   $sql .=") VALUES (";
-   $sql .="'{$categoria}','{$subcategoria}','{$cantidad}','{$venta}','{$gasto}','{$ganancia}','{$fechaInicial}','{$fechaFinal}')";
+   $sql = " SELECT h.vendedor, SUM(h.ventaLV + h.ventaSD) venta, ";
+   $sql.= " SUM(h.comisionLV + h.comisionSD) AS comision, ";
+   $sql.= " p.name FROM histestetica h ";
+   $sql.= " LEFT JOIN products p ON h.idProducto = p.id ";
+   $sql.= " LEFT JOIN sucursal s ON h.idSucursal = s.idSucursal ";
+   $sql.= " LEFT JOIN users u ON h.idUsuario = u.id ";
+   $sql.= " WHERE (h.fecha BETWEEN '{$fechaIni}' AND '{$fechaFin}' ";
+
+   if ($responsable != '')
+      $sql.= " AND  h.vendedor = '$responsable' ";
+   if ($sucursal != '')
+      $sql.= " AND h.idSucursal = '$sucursal' ";
+
+
+   $sql.= ") GROUP BY h.vendedor";
+
+   return find_by_sql($sql);
+}
+
+function altaCitaEvent($idMascota,$responsable,$fechaCita,$horaCita,$nota,$fechaActual,$idSucursal,$idEvent){
+   global $db;
+
+   $sql  ="INSERT INTO cita (id,idMascota,responsable,fecha_cita,hora,nota,fecha_solicitud,idSucursal,idEvent) ";
+   $sql .="VALUES ('','{$idMascota}','{$responsable}','{$fechaCita}','{$horaCita}','{$nota}',";
+   $sql .="'{$fechaActual}','{$idSucursal}','$idEvent')";
 
    $db->query($sql);
  
    return ($db->affected_rows() === 1) ? true : false;
 }
 
-function borraTabla($tabla){
-   global $db;
+function find_by_sql2($sql)
+{
+  global $secDB;
 
-   if(tableExists($tabla)){
+  $result = $secDB->query($sql);
+  $result_set = $secDB->while_loop($result);
 
-      $sql  = "DELETE FROM ".$db->escape($tabla);
+  return $result_set;
+}
 
-      $db->query($sql);
-    
-      return ($db->affected_rows() === 1) ? true : false;
+function tableExists2($table,$BDCondor){
+   global $secDB;
+ 
+   $table_exit = $secDB->query('SHOW TABLES FROM '.$BDCondor.' LIKE "'.$secDB->escape($table).'"');
+  
+   if($table_exit) {
+      if($secDB->num_rows($table_exit) > 0)
+         return true;
+      else
+         return false;
+   }
+}
+
+function redactarIncidencia($usuario,$fecha,$hora,$idEmpresa,$nomEmpresa,$detalles,$idEstatus,$evidencia){
+   global $secDB;
+
+   $sql = " INSERT INTO incidencias (id,usuario,fecha,hora, ";
+   $sql.= " idEmpresa,nomEmpresa,detalles,idEstatus,evidencias) ";
+   $sql.= " VALUES ('','{$usuario}','{$fecha}','{$hora}', ";
+   $sql.= " '{$idEmpresa}','{$nomEmpresa}','{$detalles}', ";
+   $sql.= " '{$idEstatus}','{$evidencia}') ";
+
+   $secDB->query($sql);
+   return ($secDB->affected_rows() === 1) ? true : false;  
+}
+
+function incidenciaSinAtender($idEmpresa,$nomEmpresa){
+   global $secDB;
+
+   $sql = " SELECT i.id, i.usuario, i.fecha, i.hora, e.estatus, e.idEstatus ";
+   $sql.= " FROM incidencias i LEFT JOIN estatus e on e.idEstatus = i.idEstatus ";
+   $sql.= " WHERE idEmpresa = '{$idEmpresa}' ";
+   $sql.= " AND nomEmpresa = '{$nomEmpresa}' ";
+   $sql.= " AND i.idEstatus <> '3' ";
+   $sql.= " AND i.idEstatus <> '4' ";
+   $sql.= " ORDER BY i.id ASC ";
+
+   return find_by_sql2($sql);
+}
+
+function cancelaIncidencia($idIncidencia,$fechaRes,$horaRes){
+   global $secDB;
+
+   $sql = " UPDATE incidencias SET idEstatus = '4', ";
+   $sql.= " fechaRes = '{$fechaRes}', horaRes = '{$horaRes}' ";
+   $sql.= " WHERE id = '{$idIncidencia}' ";
+
+   $query_id = $secDB->query($sql);
+   if ($query_id === false)
+      return false;
+   // $secDB->query($sql);
+   return ($secDB->affected_rows() === 1 ? true : false);
+}
+
+function detallesIncidencia($idIncidencia){
+   global $secDB;
+
+      $sql = " SELECT i.usuario, i.fecha, i.hora, i.detalles, i.respuesta, ";
+      $sql.= " i.representante, i.fechaRes, i.horaRes, i.evidencias, e.estatus, e.idEstatus ";
+      $sql.= " FROM incidencias i LEFT JOIN estatus e on e.idEstatus = i.idEstatus ";
+      $sql.= " WHERE id = '{$idIncidencia}' LIMIT 1";
+
+      $query = $secDB->query($sql);
+
+      if($result = $secDB->fetch_assoc($query))
+         return $result;
+      else
+         return null;
+
+   return find_by_sql2($sql);
+}
+
+function detallesHistoricoIncidencia($idIncidencia){
+   global $secDB;
+
+      $sql = " SELECT i.id,i.usuario,i.fecha,i.hora,i.idEmpresa,i.nomEmpresa,i.detalles, ";
+      $sql.= " i.evidencias,i.idEstatus,e.estatus,i.respuesta,i.representante,i.fechaRes, ";
+      $sql.= " i.horaRes FROM incidencias i ";
+      $sql.= " LEFT JOIN estatus e on e.idEstatus = i.idEstatus ";
+      $sql.= " WHERE i.id = '{$idIncidencia}' AND ";
+      $sql.= " (i.idEstatus = '3' OR i.idEstatus = '4') ";
+
+      $query = $secDB->query($sql);
+
+      if($result = $secDB->fetch_assoc($query))
+         return $result;
+      else
+         return null;
+}
+
+function historicoIncidencias($idEmpresa,$nomEmpresa,$usuario,$fechaIni,$fechaFin,$idEstatus) {
+   global $secDB;
+
+   $sql = " SELECT i.id, i.usuario, i.fechaRes, i.horaRes, e.estatus ";
+   $sql.= " FROM incidencias i LEFT JOIN estatus e on e.idEstatus = i.idEstatus ";
+   $sql.= " WHERE i.idEmpresa = '{$idEmpresa}' AND i.nomEmpresa = '{$nomEmpresa}' AND ";
+   $sql.= " i.usuario LIKE '%{$usuario}%' AND ";
+   $sql.= " i.fechaRes BETWEEN '{$fechaIni}' AND '{$fechaFin}' AND ";
+
+   if (!empty($idEstatus))
+      $sql.= " i.idEstatus = '{$idEstatus}' ";
+   else
+      $sql.= " (i.idEstatus = 3 OR i.idEstatus = 4 ) ";
+
+   $sql.= " ORDER BY i.fechaRes DESC,i.horaRes DESC ";
+
+   return find_by_sql2($sql);
+}
+
+function buscaRegistroPorCampo2($tabla,$campo,$valor,$BDCondor){
+   global $secDB;
+
+   if (tableExists2($tabla,$BDCondor)) {
+      $sql = " SELECT * FROM {$secDB->escape($tabla)} WHERE $campo = '{$secDB->escape($valor)}' LIMIT 1 ";
+
+      $query = $secDB->query($sql);
+
+      if($result = $secDB->fetch_assoc($query))
+         return $result;
+      else
+         return null;
    }
 }
 
@@ -3122,14 +3146,5 @@ function depurarBD(){
 
   return true;
 }
-function buscaSubCategorias($idCategoria, $nombre){
-   global $db;
 
-   $sql = "SELECT * FROM `subcategorias` WHERE idCategoria = '$idCategoria' ";
-   if ($nombre != '')
-      $sql.= "AND nombre like '%$nombre%'";
-
-   return find_by_sql($sql);
-}
-?>
 ?>

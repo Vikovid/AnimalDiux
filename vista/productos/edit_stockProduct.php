@@ -2,7 +2,7 @@
   $page_title = 'Editar stock del producto';
   require_once('../../modelo/load.php');
   // Checkin What level user has permission to view this page
-  page_require_level(1);
+  page_require_level(2);
 
   $product = find_by_id('products',(int)$_GET['id']); 
   $user = current_user(); 

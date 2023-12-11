@@ -2,10 +2,10 @@
    $page_title = 'Agregar cliente';
    require_once('../../modelo/load.php');
    // Checkin What level user has permission to view this page
-   page_require_level(2);
+   page_require_level(3);
 
-   $cliente = buscaRegistroMaximo("cliente","idcredencial");
-   $idCliente = $cliente['idcredencial'] + 1;
+   $clientz = buscaRegistroMaximo("cliente","idcredencial");
+   $idCliente = $clientz['idcredencial'] + 1;
 
    if(isset($_POST['add_cliente'])){
       $req_fields = array('nom_cliente','dir_cliente','tel_cliente','idcredencial' );

@@ -11,6 +11,7 @@
       if(!$resultado) {
          die("falló la eliminación.");
       }
+      
       $session->msg("s","Desparasitante eliminado correctamente.");
       redirect('desparasitante.php');
    } 

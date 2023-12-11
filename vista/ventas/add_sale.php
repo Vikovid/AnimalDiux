@@ -2,7 +2,7 @@
   $page_title = 'Lista de sucursales';
   require_once('../../modelo/load.php');
   // Checkin What level user has permission to view this page
-  page_require_level(2);
+  page_require_level(3);
   $user = current_user(); 
   $usuario = $user['name'];
   $usu = $user['id'];
@@ -78,7 +78,7 @@
                      <?php }else{ ?>
                         <td width="3%"><input type='radio' name='empresa' value='<?php echo $res["id"].$aux.$res["sale_price"] ?>' onClick='valor();'/></td>
                      <?php } ?>
-                     <td width="70%"><?php echo $res['name'] ?></td>
+                     <td width="70%"><?php echo remove_junk($res['name']); ?></td>
                      <td width="27%"><?php echo $res['sale_price'] ?></td>
                   </tr>
                <?php 
@@ -122,7 +122,7 @@
             <?php foreach ($prodsSeleccionados as $f): ?>
                <tr>
                   <td width="3%"><input type='radio' name='elimina' value='<?php echo $f["cve_temporal"].$aux.$f["product_id"] ?>'/></td>
-                  <td width="70%"><?php echo $f['name'] ?></td>
+                  <td width="70%"><?php echo remove_junk($f['name']); ?></td>
                   <td width="7%"><input type='text' class="form-control" name='cantidad' value='<?php echo $f["qty"] ?>' onChange="multiplica();"/></td>
                   <td width="20%"><?php echo $f['precio'] ?></td>
                </tr>

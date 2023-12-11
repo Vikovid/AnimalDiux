@@ -26,6 +26,6 @@
       </div>
    </form>
    <div class="form-group">
-      <a href="libs/avisoDprivacidad/politicaPrivacidad.php" target="_blank"> Política de Privacidad </a>
+      <a href="libs/documentos/politicaPrivacidad.php" target="_blank"> Política de Privacidad </a>
    </div>
 </div>

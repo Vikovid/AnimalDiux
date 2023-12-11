@@ -1,15 +1,18 @@
 <?php
    require_once('../../modelo/load.php');
    $page_title = 'Editar desparasitante';
+
    // Checkin What level user has permission to view this page
    page_require_level(3);
+
    $desparasitante = find_by_id('desparasitantes',(int)$_GET['id']);
 
    if(!$desparasitante){
       $session->msg("d","Missing desparasitante id.");
       redirect('desparasitante.php');
    }
-   if(isset($_POST['desparasitante'])){
+
+   if (isset($_POST['desparasitante'])) {
       $req_fields = array('nombre');
       validate_fields($req_fields);
 
@@ -32,12 +35,11 @@
    }
 ?>
 <?php include_once('../layouts/header.php'); ?>
-<div class="row">
-   <div class="col-md-12">
-      <?php echo display_msg($msg); ?>
-   </div>
+
+<div class="row col-md-9">
+   <?php echo display_msg($msg); ?>
 </div>
-<div class="row">
+<div class="row col-md-9">
    <div class="panel panel-default">
       <div class="panel-heading">
          <strong>

@@ -5,54 +5,28 @@
   page_require_level(1);
 
   $all_sucursal = find_all('sucursal');
+  $categorias = find_all('categories');
 
-  $p_scu = "";
+  $producto = isset($_POST['producto']) ? $_POST['producto']:'';
+  $idSucursal =  isset($_POST['sucursal']) ? $_POST['sucursal']:'';
+  $idCategoria =  isset($_POST['categoria']) ? $_POST['categoria']:'';
 
-  if (isset($_POST['product-sucursal'])){  
-     $p_scu =  remove_junk($db->escape($_POST['product-sucursal']));//prueba
+  if ($idSucursal != ""){
+     $sucursal = buscaRegistroPorCampo("sucursal","idSucursal",$idSucursal);
+     $nomSucursal = $sucursal['nom_sucursal'];
   }
+
+  $historico = histProductos($producto,$idSucursal,$idCategoria);
 ?>
 <?php include_once('../layouts/header.php'); ?>
 <script type="text/javascript" src="../../libs/js/general.js"></script>
 
 <body onload="foco();">
   <form name="form1" method="post" action="historico.php">
-  	 <?php
-         if ($p_scu != ""){
-             $sucursal = buscaRegistroPorCampo("sucursal","idSucursal",$p_scu);
-             $nomSucursal = $sucursal['nom_sucursal'];
-         }
-     ?>
      <br>
-<?php
-   $codigo= isset($_POST['Codigo']) ? $_POST['Codigo']:'';
- 
-   if($p_scu!=""){
-     if ($codigo!="") {
-        if (is_numeric($codigo)){
-           $historico = join_his_table1($codigo,$p_scu);
-        }else{
-           $historico = join_his_table2($codigo,$p_scu);
-        }
-     }else{
-        $historico = join_his_table3($p_scu);
-     }
-   }else{
-     if ($codigo!="") {
-        if (is_numeric($codigo)){
-           $historico = join_his_table1a($codigo);
-        }else{
-           $historico = join_his_table2a($codigo);
-        }
-     }else{
-        $historico = join_historico_table();
-     }
-   }
-
-?>
 <div class="row">
    <div class="col-md-12">
-      <?php echo display_msg($msg);?>
+      <?php echo display_msg($msg); ?>
    </div>
    <div class="col-md-12">
       <div class="panel panel-default">
@@ -64,11 +38,20 @@
                         <span class="input-group-addon">
                            <i class="glyphicon glyphicon-barcode"></i>
                         </span>
-                        <input type="text" class="form-control" name="Codigo" long="21" oninput="mayusculas(event)">
+                        <input type="text" class="form-control" name="producto" long="21" oninput="mayusculas(event)">
                      </div>
                   </div>
                   <div class="col-md-3">
-                     <select class="form-control" name="product-sucursal">
+                     <select class="form-control" name="categoria">
+                        <option value="">Selecciona una categoria</option>
+                        <?php  foreach ($categorias as $id): ?>
+                        <option value="<?php echo (int)$id['id'] ?>">
+                        <?php echo $id['name'] ?></option>
+                        <?php endforeach; ?>
+                     </select>
+                  </div>  
+                  <div class="col-md-2">
+                     <select class="form-control" name="sucursal">
                         <option value="">Selecciona una sucursal</option>
                         <?php  foreach ($all_sucursal as $id): ?>
                         <option value="<?php echo (int)$id['idSucursal'] ?>">
@@ -79,7 +62,7 @@
                   <a href="#" onclick="his();" class="btn btn-primary">Buscar</a>
                   <img src="../../libs/imagenes/Logo.png" height="50" width="50" alt="" align="center">
                   <?php
-                     if ($p_scu != ""){
+                     if ($idSucursal != ""){
                   ?>
                      <div class="pull-right">
                         <strong>
@@ -97,7 +80,8 @@
          <table class="table table-bordered">
             <thead>
                <tr>
-                  <th class="text-center" style="width: 14%;"> Producto </th>
+                  <th class="text-center" style="width: 16%;"> Producto </th>
+                  <th class="text-center" style="width: 16%;"> Categoría </th>
                   <th class="text-center" style="width: 5%;"> Cantidad Inicial</th>
                   <th class="text-center" style="width: 5%;"> Cantidad Final</th>
                   <th class="text-center" style="width: 10%;"> Sucursal </th>
@@ -105,8 +89,8 @@
                   <th class="text-center" style="width: 5%;"> Comentario </th>
                   <th class="text-center" style="width: 10%;"> Usuario </th>
                   <th class="text-center" style="width: 10%;"> Vendedor </th>
-                  <th class="text-center" style="width: 11%;"> Fecha </th>
-                  <th class="text-center" style="width: 7%;"> Hora </th>
+                  <th class="text-center" style="width: 10%;"> Fecha </th>
+                  <th class="text-center" style="width: 8%;"> Hora </th>
                </tr>
             </thead>
             <tbody>
@@ -121,6 +105,7 @@
                ?>     
                <tr>
                   <td><?php echo remove_junk($historico['name']); ?></td>
+                  <td><?php echo remove_junk($historico['categoria']); ?></td>
                   <td class="text-right"> <?php echo remove_junk($historico['qtyin']); ?></td>
                   <td class="text-right"> <?php echo remove_junk($historico['qtyfinal']); ?></td>
                   <td><?php echo remove_junk($historico['nom_sucursal']); ?></td>

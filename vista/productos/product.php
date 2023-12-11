@@ -2,7 +2,7 @@
    $page_title = 'Lista de productos';
    require_once('../../modelo/load.php');
   
-   page_require_level(1);
+   page_require_level(2);
 
    $categorias =     find_all('categories');
    $subcategorias =  array();
@@ -73,14 +73,14 @@
    $cantidadTotal =  $totales['cantidadTotal'];
    $totalVenta =     $totales['totalVenta'];
 
-   echo("<span>Total de Inversion: </span>");
+   /*echo("<span>Total de Inversion: </span>");
    echo number_format($totalPrecio,2);
    echo("<br>");
    echo("<span>Total de Producto: </span>");
    echo number_format($cantidadTotal,2);
    echo("<br>");
    echo("<span>Total de Venta: </span>");
-   echo number_format($totalVenta,2);
+   echo number_format($totalVenta,2);*/
 
    if (isset($_POST['buscar']) && $_POST['buscar'] == "1") {
 
@@ -140,11 +140,11 @@
                         <option value="">Selecciona Categoria</option>
                         <?php  foreach ($categorias as $categoria): ?>
                            <?php if (isset($_POST['categoria']) && ($_POST['categoria'] == $categoria['id']) && $_POST['buscar'] == 0) { ?>
-                              <option value="<?php echo $categoria['id'] ?>" selected> <?php echo utf8_encode($categoria['name']) ?> </option>   
+                              <option value="<?php echo $categoria['id'] ?>" selected> <?php echo remove_junk($categoria['name']) ?> </option>   
                            <?php } else { ?>
 
                            <?php } ?>
-                              <option value="<?php echo $categoria['id'] ?>"> <?php echo utf8_encode($categoria['name']) ?> </option>
+                              <option value="<?php echo $categoria['id'] ?>"> <?php echo remove_junk($categoria['name']) ?> </option>
                         <?php endforeach; ?>
                      </select>
                   </div>
@@ -152,7 +152,7 @@
                      <select class="form-control" name="subcategoria">
                         <option value="">Selecciona SubCategoria</option>
                         <?php foreach ($subcategorias as $subcategoria): ?>
-                           <option value="<?php echo $subcategoria['idSubCategoria'] ?>"> <?php echo $subcategoria['nombre'] ?> </option>
+                           <option value="<?php echo $subcategoria['idSubCategoria'] ?>"> <?php echo remove_junk($subcategoria['nombre']) ?> </option>
                         <?php endforeach ?>
                      </select>
                   </div>  

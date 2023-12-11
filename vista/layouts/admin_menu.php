@@ -29,11 +29,7 @@
     </a>
     <ul class="nav submenu">
        <li><a href="../clientes/add_cliente.php">Agregar cliente</a> </li>
-   </ul>
-    <ul class="nav submenu">
        <li><a href="../mascotas/add_mascotas.php">Agregar mascota</a> </li>
-   </ul>
-    <ul class="nav submenu">
        <li><a href="../clientes/cliente.php">Buscar Cliente</a> </li>
    </ul>
   </li>
@@ -78,7 +74,7 @@
       <span>Catálogos</span>
     </a>
     <ul class="nav submenu">
-      <li><a href="../catalogos/solucion.php">Medicamento inyectables</a></li>
+      <li><a href="../catalogos/solucion.php">Medicamentos inyectables</a></li>
        <li><a href="../catalogos/desparasitante.php">Administrar desparasitantes</a></li>
        <li><a href="../catalogos/vacunas.php">Administrar vacunas</a></li>
     </ul>
@@ -105,8 +101,8 @@
       <span>Actividades</span>
     </a>
     <ul class="nav submenu">
-      <li><a href="../consultas/actividades.php">Actividades del día</a> </lij>
-       <li><a href="../consultas/actividades_quin.php">Actividades de la quincena</a> </lij>
+      <li><a href="../consultas/actividades.php">Actividades del día</a> </li>
+       <li><a href="../consultas/actividades_quin.php">Actividades de la quincena</a> </li>
        <li><a href="../consultas/actividades_mes.php">Actividades del mes</a> </li>
    </ul>
   </li>
@@ -122,7 +118,7 @@
       <span>Proveedores</span>
     </a>
     <ul class="nav submenu">
-       <li><a href="../proveedores/proveedores.php">Administrar proveedores</a> </lij>
+       <li><a href="../proveedores/proveedores.php">Administrar proveedores</a> </li>
        <li><a href="../proveedores/add_proveedores.php">Agregar proveedores</a> </li>
    </ul>
   </li>
@@ -142,7 +138,7 @@
       <span>Gastos</span>
     </a>
     <ul class="nav submenu">
-       <li><a href="../gastos/gastos.php">Administrar  gastos</a> </lij>
+       <li><a href="../gastos/gastos.php">Administrar  gastos</a> </li>
        <li><a href="../gastos/add_gastos.php">Agregar gastos</a> </li>
        <li><a href="../consultas/monthly_sales_gastos.php">Gastos por proveedor</a> </li>
        <li><a href="../consultas/monthly_sales_gastos_categoria.php">Gastos por categoria</a></li>
@@ -172,7 +168,7 @@
       </a>
       <ul class="nav submenu">
         <!--li><a href="sales_report.php">Ventas por fecha</a></li-->
-        <li><a href="../consultas/tempCatSubcat.php">Ventas por categoría</a></li>
+        <li><a href="../consultas/monthly_sales_categoria.php">Ventas por categoría</a></li>
         <li><a href="../consultas/ventas_mens_categoria.php">Ventas mensuales por categoría</a></li>
         <!--li><a href="../consultas/ventas_anuales_categoria.php">Ventas anuales por categoría</a></li-->
         <li><a href="../consultas/ventas_gastos_mens_categoria.php">Ventas y gastos por categoría</a></li>
@@ -192,8 +188,20 @@
          <li><a href="../consultas/cortes.php">Cortes</a> </li>
          <li><a href="../consultas/cortes_dia.php">Corte del día</a> </li>
          <li><a href="../consultas/cortes_semana.php">Corte de la quincena</a> </li>
+         <li><a href="../consultas/comisionEstetica.php">Comisiones estética</a></li>         
          <!--li><a href="cortes_estetica_quincena.php">Comisiones</a> </li-->
      </ul>
   </li>
+   <li><!-- Incidencias -->
+      <a href="#" class="submenu-toggle">
+         <i class="glyphicon glyphicon-bell"></i>
+         <span>Incidencias</span>
+      </a>
+      <ul class="nav submenu">
+         <li><a href="../incidencias/redactarIncidencia.php">Reportar Incidencia</a></li>
+         <li><a href="../incidencias/incidencias.php">Incidencias sin Atender</a></li>
+         <li><a href="../incidencias/historicoIncidencias.php">Histórico de Incidencias</a></li>
+      </ul>
+   </li>
 </ul>
 </div>

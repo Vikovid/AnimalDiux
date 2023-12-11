@@ -4,62 +4,85 @@
 
    $page_title = 'Edición de consulta';
    // Checkin What level user has permission to view this page
-   page_require_level(2);
-   $user = current_user(); 
-   $idUsuario = $user['id'];
+   page_require_level(3);
+
+   $user =       current_user(); 
+   $idUsuario =  $user['id'];
    $idSucursal = $user['idSucursal'];
 
    $consulta = buscaRegistroPorCampo('Consulta','idconsulta',(int)$_GET['idconsulta']);
-   $id= $consulta['idMascota'];
+   $id =       $consulta['idMascota'];
+   $fecha =    $consulta['fecha'];
+
+   $mascota = buscaRegistroPorCampo('Mascotas','idMascotas',$id);
+   $nombre =  $mascota['nombre'];
 
    ini_set('date.timezone','America/Mexico_City');
-   $fecha_actual=date('Y-m-d',time());
-   $hora_actual=date('H:i:s',time());
+   $hora_actual =  date('H:i:s',time());
+   $fecha_actual = date('Y-m-d',time());
+
+   $anios = 0;
+   $meses = 0;
+   $dias =  0;
 
    if(isset($_POST['consulta'])){
       $req_fields = array('receta','problema','diagnostico');
       validate_fields($req_fields);
       if(empty($errors)){
-         $c_receta  = remove_junk($db->escape($_POST['receta']));
-         $c_problema  = remove_junk($db->escape($_POST['problema']));
-         $c_temp  = remove_junk($db->escape($_POST['temp']));
-         $c_peso  = remove_junk($db->escape($_POST['peso']));
-         $c_diagnostico  = remove_junk($db->escape($_POST['diagnostico']));
-         $c_nota  = remove_junk($db->escape($_POST['Nota']));
+         $c_temp =        remove_junk($db->escape($_POST['temp']));
+         $c_peso =        remove_junk($db->escape($_POST['peso']));
+         $c_nota =        remove_junk($db->escape($_POST['Nota']));
+         $c_receta =      remove_junk($db->escape($_POST['receta']));
+         $c_problema =    remove_junk($db->escape($_POST['problema']));
+         $c_diagnostico = remove_junk($db->escape($_POST['diagnostico']));
 
-         $resultado = actConsulta($c_receta,$c_problema,$c_temp,$c_peso,$c_diagnostico,$c_nota,$fecha_actual,$consulta['idconsulta']);
+         $resultado = actConsulta($c_receta,
+                                  $c_problema,
+                                  $c_temp,
+                                  $c_peso,
+                                  $c_diagnostico,
+                                  $c_nota,
+                                  $fecha_actual,
+                                  $hora_actual,
+                                  $consulta['idconsulta']);
 
-         //if($resultado){
+         if($resultado){
             $session->msg('s',"Registro Exitoso. ");
 
-            $consMasc= buscaClienteMascota($id);
+            $consMasc = buscaClienteMascota($id);
            
-            $nombre=$consMasc['nombre'];
-            $especie=$consMasc['especie'];
-            $raza=$consMasc['raza'];
-            $Color=$consMasc['Color'];
-            $alimento=$consMasc['alimento'];
-            $sexo=$consMasc['sexo'];
-            $estado=$consMasc['estado'];
-            $edad=$consMasc['fecha_nacimiento'];
-            $nom_cliente=$consMasc['nom_cliente'];
-            $idcredencial=$consMasc['idcredencial'];
+            $nombre =          $consMasc['nombre'];
+            $especie =         $consMasc['especie'];
+            $raza =            $consMasc['raza'];
+            $Color =           $consMasc['Color'];
+            $alimento =        $consMasc['alimento'];
+            $sexo =            $consMasc['sexo'];
+            $estado =          $consMasc['estado'];
+            $edad =            $consMasc['fecha_nacimiento'];
+            $nom_cliente =     $consMasc['nom_cliente'];
+            $idcredencial =    $consMasc['idcredencial'];
             $Recomendaciones = "RECOMENDACIONES:";
-            $Tratamiento = "TRATAMIENTO:";
-            $Diagnostico = "Diagnóstico: ";
+            $Tratamiento =     "TRATAMIENTO:";
+            $Diagnostico =     "Diagnóstico: ";
 
-            altaHistConsulta($idUsuario,$idcredencial,$id,$idSucursal,"Modificacion consulta",$fecha_actual,$hora_actual);
+            altaHistConsulta($idUsuario,
+                             $idcredencial,
+                             $id,
+                             $idSucursal,
+                             "Modificacion consulta",
+                             $fecha_actual,
+                             $hora_actual);
             
-            $fecha=date('d-m-Y',time());
+            $fecha = date('d-m-Y',time());
 
             if ($edad != '0000-00-00'){
                $fecha_nacimiento = new DateTime($edad);
-               $hoy = new DateTime();
-               $edadMas = $hoy->diff($fecha_nacimiento);
+               $hoy =              new DateTime();
+               $edadMas =          $hoy->diff($fecha_nacimiento);
 
                $anios = $edadMas->y;
                $meses = $edadMas->m;
-               $dias = $edadMas->d;
+               $dias =  $edadMas->d;
             }
 
             $pdf = new PDF();
@@ -126,15 +149,13 @@
 
             $pos = strpos($strText,'\n');
 
-            if ($pos == 0 && $pos != ""){
+            if ($pos == 0 && $pos != "")
                $strText=substr($strText,2,strlen($strText));
-            }
 
             $cont = 0;
 
-            if (strpos($strText,'\n') == false){
+            if (strpos($strText,'\n') == false)
                $strText = $strText."\\n";
-            }
 
             $pdf->SetFont('Arial','',11);
             $pdf->SetXY(10,90);
@@ -181,21 +202,19 @@
 
             $pos = strpos($strText,'\n');
 
-            if ($pos == 0 && $pos != ""){
+            if ($pos == 0 && $pos != "")
                $strText=substr($strText,2,strlen($strText));
-            }
 
             $cont = 0;
 
-            if (strpos($strText,'\n') == false){
+            if (strpos($strText,'\n') == false)
                $strText = $strText."\\n";
-            }
 
             $pdf->SetFont('Arial','',11);
             $pdf->SetXY(10,107);
             //$pdf->MultiCell(188,5,utf8_decode($strText),"0","J",false);
 
-            while (strlen($strText) > 0){
+            while (strlen($strText) > 0) {
                $strPos = strpos($strText,'\n');
                if ($strPos == false){
                   $pdf->MultiCell(188,5,utf8_decode($strText),"0","J",false);
@@ -235,15 +254,13 @@
 
             $pos = strpos($strText,'\n');
 
-            if ($pos == 0 && $pos != ""){
+            if ($pos == 0 && $pos != "")
                $strText=substr($strText,2,strlen($strText));
-            }
 
             $cont = 0;
 
-            if (strpos($strText,'\n') == false){
+            if (strpos($strText,'\n') == false)
                $strText = $strText."\\n";
-            }
 
             $pdf->SetFont('Arial','',11);
             $pdf->SetXY(10,173);
@@ -265,99 +282,91 @@
                }
             }
             $pdf->Output('ticket.pdf', 'I');
-         /*}else{
-            $session->msg('d',' Lo siento, falló el registro.');
+         }else{
+            $session->msg('d','Receta no actualizada, no se realizó ninguna modificación');
             redirect('edit_consulta.php?idconsulta='.$consulta['idconsulta'], false);
-         }*/
+         }
       }else{
          $session->msg("d", $errors);
          redirect('edit_consulta.php?idconsulta='.$consulta['idconsulta'],false);
       }
    }
-   $mascota = buscaEstadoNombMasc($id);
-   $nombre = $mascota['nombre'];
+   // $mascota = buscaEstadoNombMasc($id);
+   // $nombre = $mascota['nombre'];
 ?>
 <?php include_once('../layouts/header.php'); ?>
+
 <script type="text/javascript" src="../../libs/js/general.js"></script>
 
-<div class="row">
-   <div class="col-md-12">
-      <?php echo display_msg($msg); ?>
-   </div>
+<div class="row col-md-9">
+   <?php echo display_msg($msg); ?>
 </div>
-<div class="row">
-   <div class="col-md-9">
-      <div class="panel panel-default">
-         <div class="panel-heading">
-            <strong>
-               <span class="glyphicon glyphicon-th"></span>
-               <span>Edición de consulta de:</span>
-               <span><?php echo $nombre ?></span>
-            </strong>
-         </div>
-         <div class="panel-body">
-            <div class="col-md-12">
-            <form name="form1" method="post" action="edit_consulta.php?idconsulta=<?php echo (int)$consulta['idconsulta'] ?>" class="clearfix">
-               <div class="col-md-4">
+<div class="row col-md-9">
+   <div class="panel panel-default">
+      <div class="panel-heading">
+         <strong>
+            <div class="form-group">
+               <span class="glyphicon glyphicon-edit"></span>
+               <span>Edición de consulta de: <?php echo $nombre ?></span>
+            </div>
+            <div class="form-group">
+               <span class="glyphicon glyphicon-calendar"></span>
+               <span> fecha: <?php echo $fecha ?></span>
+            </div>
+         </strong>
+      </div>
+      <div class="panel-body">
+         <form name="form1" method="post" action="edit_consulta.php?idconsulta=<?php echo (int)$consulta['idconsulta'] ?>" class="clearfix">
+            <div class="form-group row">
+               <div class="col-md-6">
                   <div class="input-group">
                      <span class="input-group-addon">
                         <i class="glyphicon glyphicon-scale"></i>
                      </span>
-                     <input type="number" step="0.01" class="form-control" name="peso" placeholder="Peso" value="<?php echo remove_junk($consulta['peso']); ?>">Kg
+                     <input type="number" step="0.01" class="form-control" name="peso" placeholder="Peso" value="<?php echo remove_junk($consulta['peso']); ?>">Kg.
                   </div>
                </div>
-               <div class="col-md-4">
+               <div class="col-md-6">
                   <div class="input-group">
                      <span class="input-group-addon">
                         <i class="glyphicon glyphicon-info-sign"></i>
                      </span>
-                     <input type="number" step="0.01" class="form-control" name="temp" placeholder="Temperatura" value="<?php echo remove_junk($consulta['temperatura']); ?>">C
+                     <input type="number" step="0.01" class="form-control" name="temp" placeholder="Temperatura" value="<?php echo remove_junk($consulta['temperatura']); ?>">°C
                   </div>
                </div>
-               <br>
-               <br>
-               <br>
-               <div class="form-group">
-                  <div class="input-group">
-                     <span class="input-group-addon">
-                        <i class="glyphicon glyphicon-th-large"></i>
-                     </span>
-                     <p><textarea name="problema" class="form-control" placeholder="Historial clínico" maxlength="300" rows="3" style="resize: none"><?php echo remove_junk($consulta['problema']); ?></textarea></p>
-                  </div>
-               </div>
-               <div class="form-group">
-                  <div class="input-group">
-                     <span class="input-group-addon">
-                        <i class="glyphicon glyphicon-th-large"></i>
-                     </span>
-                     <p><textarea name="diagnostico" class="form-control" placeholder="Diagnóstico" maxlength="100" rows="1" style="resize: none"><?php echo remove_junk($consulta['diagnostico']); ?></textarea></p>
-                  </div>
-               </div>
-               <div class="form-group">
-                  <div class="input-group">
-                     <span class="input-group-addon">
-                        <i class="glyphicon glyphicon-th-large"></i>
-                     </span>
-                     <p><textarea name="receta" class="form-control" placeholder="Receta" maxlength="1204" rows="12" style="resize: none"><?php echo remove_junk($consulta['consulta']); ?></textarea></p>
-                  </div>
-               </div>
-               <div class="form-group">
-                  <div class="input-group">
-                     <span class="input-group-addon">
-                        <i class="glyphicon glyphicon-th-large"></i>
-                     </span>
-                     <p><textarea name="Nota" class="form-control" placeholder="Recomendaciones" maxlength="1000" rows="10" style="resize: none" oninput="mayusculas(event)"><?php echo remove_junk($consulta['nota']); ?></textarea></p>
-                  </div>
-               </div>
-               <input type="hidden" value="<?php echo $id ?>" name="idMascotas">
-               <div class="form-group" align="center">
-                  <input type="button" name="button" onclick="regresaHistory();" class="btn btn-primary" value="Regresar">
-                  <button type="submit" name="consulta" class="btn btn-danger">Imprimir y Actualizar</button>
-               </div>
-            </form>
             </div>
-         </div>
+            <div class="form-group input-group">
+               <span class="input-group-addon">
+                  <i class="glyphicon glyphicon-th-large"></i>
+               </span>
+               <textarea name="problema" class="form-control" placeholder="Historial clínico" maxlength="300" rows="3" style="resize: none"><?php echo remove_junk($consulta['problema']); ?></textarea>
+            </div>
+            <div class="form-group input-group">
+               <span class="input-group-addon">
+                  <i class="glyphicon glyphicon-th-large"></i>
+               </span>
+               <textarea name="diagnostico" class="form-control" placeholder="Diagnóstico" maxlength="100" rows="1" style="resize: none"><?php echo remove_junk($consulta['diagnostico']); ?></textarea>
+            </div>
+            <div class="form-group input-group">
+               <span class="input-group-addon">
+                  <i class="glyphicon glyphicon-th-large"></i>
+               </span>
+               <textarea name="receta" class="form-control" placeholder="Receta" maxlength="1204" rows="12" style="resize: none"><?php echo remove_junk($consulta['consulta']); ?></textarea>
+            </div>
+            <div class="form-group input-group">
+               <span class="input-group-addon">
+                  <i class="glyphicon glyphicon-th-large"></i>
+               </span>
+               <textarea name="Nota" class="form-control" placeholder="Recomendaciones" maxlength="1000" rows="10" style="resize: none" oninput="mayusculas(event)"><?php echo remove_junk($consulta['nota']); ?></textarea>
+            </div>
+            <div class="form-group" align="center">
+               <input type="hidden" value="<?php echo $id ?>" name="idMascotas">
+               <input type="button" name="button" onclick="regresaHistory();" class="btn btn-primary" value="Regresar">
+               <button type="submit" name="consulta" class="btn btn-danger">Imprimir y Actualizar</button>
+            </div>
+         </form>
       </div>
    </div>
 </div>
+
 <?php include_once('../layouts/footer.php'); ?>

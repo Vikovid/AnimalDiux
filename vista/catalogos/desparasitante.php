@@ -9,17 +9,18 @@
    if(isset($_POST['agregar'])){
       $req_fields = array('desparasitante');
       validate_fields($req_fields);
+
       if(empty($errors)){
          $resultado = altaDesparasitante($nombre);
 
-         if($resultado){
+         if($resultado)
             $session->msg('s',"Desparasitante agregado exitosamente.");
-            redirect('desparasitante.php', false);
-         }else{
+         else
             $session->msg('d',' Lo siento, falló el registro.');
-            redirect('desparasitante.php', false);
-         }
-      }else{
+            
+         redirect('desparasitante.php', false);
+
+      } else {
          $session->msg("d", $errors);
          redirect('desparasitante.php',false);
       }
@@ -50,29 +51,26 @@
 
 <body onload="foco();">
    <form name="form1" method="post" action="desparasitante.php">
-      <br>
-      <div class="row">
-         <div class="col-md-9">
-            <?php echo display_msg($msg); ?>
-         </div>
-         <div class="col-md-9">
-            <div class="panel panel-default">
-               <div class="panel-heading clearfix">
-                  <div class="pull-right">
-                     <div class="form-group">
-                        <div class="col-md-6">
-                           <div class="input-group">
-                              <span class="input-group-addon">
-                                 <i class="glyphicon glyphicon-barcode"></i>
-                              </span>
-                              <input type="text" class="form-control" name="desparasitante" long="50" placeholder="Desparasitante">
-                           </div>
-                        </div>  
-                        <a href="#" onclick="desparasitantes();" class="btn btn-primary">Buscar</a> 
-                        <button type="submit" name="agregar" class="btn btn-primary">Agregar desparasitante</button>
-                     </div>   
+      <div class="row col-md-9">
+         <?php echo display_msg($msg); ?>
+      </div>
+      <div class="row col-md-9">
+         <div class="panel panel-default">
+            <div class="panel-heading clearfix">
+               <div class="pull-right">
+                  <div class="form-group">
+                     <div class="col-md-6">
+                        <div class="input-group">
+                           <span class="input-group-addon">
+                              <i class="glyphicon glyphicon-barcode"></i>
+                           </span>
+                           <input type="text" class="form-control" name="desparasitante" long="50" placeholder="Desparasitante">
+                        </div>
+                     </div>  
+                     <a href="#" onclick="desparasitantes();" class="btn btn-primary">Buscar</a> 
+                     <button type="submit" name="agregar" class="btn btn-primary">Agregar desparasitante</button>
                   </div>   
-               </div>
+               </div>   
             </div>
             <div class="panel-body">
                <table class="table table-bordered">
@@ -87,7 +85,7 @@
                      <?php foreach ($desparasitante as $desparasitante):?>
                      <tr>
                         <td class="text-center"><?php echo count_id();?></td>
-                        <td> <?php echo utf8_decode($desparasitante['nombre']); ?></td>
+                        <td> <?php echo remove_junk($desparasitante['nombre']); ?></td>
                         <td class="text-center">
                            <div class="btn-group">
                               <a href="edit_desparasitante.php?id=<?php echo (int)$desparasitante['id'];?>" class="btn btn-info btn-xs"  title="Editar" data-toggle="tooltip">

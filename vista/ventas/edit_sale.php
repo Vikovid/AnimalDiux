@@ -302,7 +302,7 @@ function sumaTotal(){
              <div class="panel-heading">
                 <strong>
                    <span class="glyphicon glyphicon-th"></span>
-                   <span><?php echo "Vendedor: $vendedor    Fecha: $fechaFin"; ?></span>   
+                   <span><?php echo remove_junk("Vendedor: $vendedor    Fecha: $fechaFin"); ?></span>   
                 </strong>
              </div>
           </div>

@@ -2,7 +2,7 @@
   $page_title = 'Abono';
   require_once('../../modelo/load.php');
   // Checkin What level user has permission to view this page
-  page_require_level(2);
+  page_require_level(3);
 
   ini_set('date.timezone','America/Mexico_City');
   $fecha_actual = date('Y-m-d',time());
@@ -194,6 +194,7 @@
 
                  $datosProducto = find_by_id("products",$productId);
                  $categoria = $datosProducto['categorie_id'];
+                 $subcategoria = $datosProducto['idSubcategoria'];                 
 
                  if ($cont == 0){
                     $resta = $primerApart['total'] - $a_abono;

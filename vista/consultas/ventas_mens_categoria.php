@@ -53,13 +53,13 @@ function ventasMens(){
 }
 
 function excel(){
-   if (document.form1.categoria.value != ""){
-      document.form1.action = "../excel/menscategoria.php";
-      document.form1.submit();
-   }else{
-      document.form1.categoria.focus();
-      return -1;
-   }
+  if (document.form1.categoria.value != ""){
+     document.form1.action = "../excel/menscategoria.php";
+     document.form1.submit();
+  }else{
+     document.form1.categoria.focus();
+     return -1;
+  }
 }
 
 </script>  
@@ -128,7 +128,7 @@ function excel(){
                <?php if($nomCategoria != ""){ ?>
                   <strong>
                      <span class="glyphicon glyphicon-th"></span>
-                     <?php echo $nomCategoria; ?>
+                     <?php echo remove_junk($nomCategoria); ?>
                   </strong>
                <?php } ?>   
                </div>

@@ -1,7 +1,7 @@
 <?php
    require_once ('../../modelo/load.php');
    $page_title = 'Lista de subcategorías';
-   page_require_level(1);
+   page_require_level(2);
 
    $idCategoria =  isset($_POST['idCategoria'])  ? $_POST['idCategoria']:'';
    $catId =        isset($_GET['idCat'])         ? $_GET['idCat']:'';
@@ -37,14 +37,12 @@
          redirect('subcategorias.php?idCat='.$categoriaId,false);
       }
    }
-   $subCategorias = $subcat != '' ? 
-                    buscaSubCategorias($idCategoria, $subcat) : 
-                    buscaSubCategorias($idCategoria, '');
+   $subCategorias = $subcat != '' ? buscaSubCategorias($idCategoria, $subcat) : buscaSubCategorias($idCategoria, '');
 ?>
 <?php include_once('../layouts/header.php'); ?>
 <script language="Javascript">
    function foco(){
-      document.form1.subCategoria.focus();
+      document.form1.subcategoria.focus();
    }
    function buscar(){
       categoriaId = document.form1.categoriaId.value;
@@ -106,7 +104,7 @@
                         <?php foreach ($subCategorias as $subCategoria):?>
                            <tr>
                               <td class="text-center"><?php echo count_id();?></td>
-                              <td> <?php echo utf8_encode($subCategoria['nombre']); ?></td>
+                              <td> <?php echo remove_junk($subCategoria['nombre']); ?></td>
                               <td class="text-center">
                                  <div class="btn-group">
                                     <a href="editarSubCategoria.php?id=<?php echo (int)$subCategoria['id'];?>&idCat=<?php echo(int)$subCategoria['idCategoria']; ?>" class="btn btn-info btn-xs" title="Editar" data-toggle="tooltip">

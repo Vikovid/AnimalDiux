@@ -196,7 +196,7 @@ function foco(){
                <?php foreach ($ventasTipoPago as $venta):?>
                   <tr>
                      <td class="text-center"><?php echo date("d-m-Y", strtotime ($venta['fecha'])); ?></td>
-                     <td class="text-center"><?php echo $venta['tipo_pago']; ?></td>
+                     <td class="text-center"><?php echo remove_junk($venta['tipo_pago']); ?></td>
                      <td class="text-right"><?php echo remove_junk($venta['cantidad']); ?></td>
                   </tr>
                <?php endforeach;?>

@@ -2,7 +2,7 @@
    $page_title = 'Editar producto';
    require_once('../../modelo/load.php');
 
-   page_require_level(1);
+   page_require_level(2);
 
    $product = find_by_id('products',(int)$_GET['id']);
    $foto = $product['foto'];
@@ -178,7 +178,7 @@
       }
       if (cats.value === "") {
          alert("El campo 'Categoría' no puede estar vacío");
-         document.form1.cats.focus();
+         document.form1.categoria.focus();
          return false;
       }
       if (cantidad.value === "") {
@@ -257,7 +257,7 @@
                            <option value="">Selecciona una categoría</option>
                            <?php  foreach ($all_categories as $cat): ?>
                            <option value="<?php echo $cat['id'] ?>">
-                           <?php echo $cat['name'] ?></option>
+                           <?php echo remove_junk($cat['name']); ?></option>
                            <?php endforeach; ?>
                         </select>
                      </div>
@@ -279,7 +279,7 @@
                            <option value="">Sin proveedor</option>
                            <?php  foreach ($all_proveedor as $proveedor): ?>
                            <option value="<?php echo $proveedor['idProveedor'] ?>">
-                           <?php echo $proveedor['nom_proveedor'] ?></option>
+                           <?php echo remove_junk($proveedor['nom_proveedor']); ?></option>
                            <?php endforeach; ?>
                         </select>
                      </div>
@@ -288,7 +288,7 @@
                            <option value="">Sin sucursal</option>
                            <?php  foreach ($all_sucursal as $sucursal): ?>
                            <option value="<?php echo $sucursal['idSucursal'] ?>">
-                           <?php echo $sucursal['nom_sucursal'] ?></option>
+                           <?php echo remove_junk($sucursal['nom_sucursal']); ?></option>
                            <?php endforeach; ?>
                         </select>
                      </div>

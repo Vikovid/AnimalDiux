@@ -1,7 +1,7 @@
 <?php 
    require_once('../../modelo/load.php'); 
    $page_title = 'Agendar Cita';
-   page_require_level(2);
+   page_require_level(3);
    ini_set('date.timezone','America/Mexico_City');
 
    $encargados =   find_all('users');
@@ -97,7 +97,7 @@
             <strong>
                <span class="glyphicon glyphicon-th"></span>
                <span>Agendar cita de :</span>
-               <span><?php echo $nombre ?></span>
+               <span><?php echo remove_junk($nombre); ?></span>
             </strong>     
          </div>
          <div class="panel-body">
@@ -113,7 +113,7 @@
                      <select class="form-control" name="responsable">
                         <option value="">Selecciona responsable</option>
                         <?php  foreach ($encargados as $id): ?>
-                           <option value="<?php echo $id['username'] ?>"><?php echo $id['name'] ?></option>
+                           <option value="<?php echo $id['username'] ?>"><?php echo remove_junk($id['name']); ?></option>
                         <?php endforeach; ?>
                      </select>
                   </div>
@@ -152,7 +152,7 @@
                   <label>Sincronizar con Google Calendar <img src="../../libs/imagenes/Calendar.png" class="google-logo"> </label>
                   <input type="checkbox" name="sincronizar">
                <?php endif ?>
-               <input type="button" name="button" onclick="regresaHistory();" class="btn btn-primary" value="Regresar">
+               <a href="clinica.php" class="btn btn-primary">Regresar</a>
                <button type="submit" name="consulta" class="btn btn-danger">Guardar</button>
                
                <input type="hidden" value="<?php echo $idmas ?>" name="id">

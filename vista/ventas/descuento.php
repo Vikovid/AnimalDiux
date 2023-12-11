@@ -2,7 +2,7 @@
    $page_title = 'Descuento/Forma de pago';
    require_once('../../modelo/load.php');
    // Checkin What level user has permission to view this page
-   page_require_level(2);
+   page_require_level(3);
    $vendedores = find_all('users');
    $user = current_user(); 
    $usuario = $user['name'];
@@ -197,7 +197,7 @@ function descuento(){
                 <td width="50%">Puntos</td>
               </tr>
               <tr>
-                <td width="50%"><?php echo $nomCliente ?></td>
+                <td width="50%"><?php echo remove_junk($nomCliente); ?></td>
                 <td width="50%"><?php echo floor($venta) ?></td>
               </tr>
             </thead>
@@ -235,7 +235,7 @@ function descuento(){
                   <option value="">Selecciona vendedor</option>
                   <?php  foreach ($vendedores as $id): ?>
                   <option value="<?php echo $id['username'] ?>">
-                  <?php echo $id['name'] ?></option>
+                  <?php echo remove_junk($id['name']); ?></option>
                   <?php endforeach; ?>
                </select>
             </div>
